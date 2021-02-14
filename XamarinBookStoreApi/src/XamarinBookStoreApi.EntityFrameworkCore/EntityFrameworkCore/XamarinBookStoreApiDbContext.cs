@@ -5,6 +5,7 @@ using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.Identity;
 using Volo.Abp.Users.EntityFrameworkCore;
+using XamarinBookStoreApi.Domain.Books;
 
 namespace XamarinBookStoreApi.EntityFrameworkCore
 {
@@ -25,6 +26,8 @@ namespace XamarinBookStoreApi.EntityFrameworkCore
         /* Add DbSet properties for your Aggregate Roots / Entities here.
          * Also map them inside XamarinBookStoreApiDbContextModelCreatingExtensions.ConfigureXamarinBookStoreApi
          */
+
+         public DbSet<Book> Books { get; set; }
 
         public XamarinBookStoreApiDbContext(DbContextOptions<XamarinBookStoreApiDbContext> options)
             : base(options)

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Volo.Abp;
+using Volo.Abp.EntityFrameworkCore.Modeling;
+using XamarinBookStoreApi.Domain.Books;
 
 namespace XamarinBookStoreApi.EntityFrameworkCore
 {
@@ -17,6 +19,14 @@ namespace XamarinBookStoreApi.EntityFrameworkCore
             //    b.ConfigureByConvention(); //auto configure for the base class props
             //    //...
             //});
+
+            builder.Entity<Book>(b =>
+            {
+                b.ToTable(XamarinBookStoreApiConsts.DbTablePrefix + "Books", XamarinBookStoreApiConsts.DbSchema);
+                b.ConfigureByConvention();
+            
+                b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            });
         }
     }
 }
