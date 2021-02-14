@@ -29,6 +29,15 @@ bld/
 [Bb]in/
 [Oo]bj/
 
+**/*.Android/[Dd]ebug/
+**/*.Android/[Dd]ebugPublic/
+**/*.Android/[Rr]elease/
+**/*.Android/x64/
+**/*.Android/build/
+**/*.Android/bld/
+**/*.Android/[Bb]in/
+**/*.Android/[Oo]bj/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
