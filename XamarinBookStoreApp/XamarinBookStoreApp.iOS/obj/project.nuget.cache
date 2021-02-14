@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "ZZzrqztlLFTn2aHD9YhMMieUF9zzLpYnKQ1CNBDGXgMVFfDkRDPSYg6zCxUn2hcaLfXmnHX0PmOZP3oHPBg6eA==",
+  "success": true,
+  "projectFilePath": "D:\\_AbpBlazor\\AbpArticles\\AbpApiConsumedByXamarin\\XamarinBookStoreApp\\XamarinBookStoreApp.iOS\\XamarinBookStoreApp.iOS.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\bartv\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\bartv\\.nuget\\packages\\xamarin.essentials\\1.6.1\\xamarin.essentials.1.6.1.nupkg.sha512",
+    "C:\\Users\\bartv\\.nuget\\packages\\xamarin.forms\\5.0.0.2012\\xamarin.forms.5.0.0.2012.nupkg.sha512"
+  ],
+  "logs": []
+}
