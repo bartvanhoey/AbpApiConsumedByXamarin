@@ -215,6 +215,23 @@ namespace XamarinBookStoreApi.IdentityServer
                     corsOrigins: new[] { swaggerRootUrl.RemovePostFix("/") }
                 );
             }
+
+            // Xamarin Client
+            var xamarinClientId = configurationSection["XamarinBookStoreApi_Xamarin:ClientId"];
+            if (!xamarinClientId.IsNullOrWhiteSpace())
+            {
+                var xamarinRootUrl = configurationSection["XamarinBookStoreApi_Xamarin:RootUrl"].TrimEnd('/');
+
+                await CreateClientAsync(
+                    name: xamarinClientId,
+                    scopes: commonScopes,
+                    grantTypes: new[] { "authorization_code" },
+                    secret: configurationSection["XamarinBookStoreApi_Xamarin:ClientSecret"]?.Sha256(),
+                    requireClientSecret: false,
+                    redirectUri: "xamarinformsclients://callback",
+                    corsOrigins: new[] { xamarinRootUrl.RemovePostFix("/") }
+                );
+            }
         }
 
         private async Task<Client> CreateClientAsync(
