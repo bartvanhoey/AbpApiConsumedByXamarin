@@ -1,6 +1,6 @@
 # AbpApiConsumedByXamarin
 
-## API
+## Setup BookStore API and IdentityServer
 
 ### Create a new ABP project with a separate IdentityServer project
 
@@ -82,3 +82,85 @@ WARNING: Do this only in a development environment, not in a production environm
 Run the XamarinBookStoreApi.DbMigrator project to apply the database migrations.
 
 ### Run Identity, Api and Blazor project
+
+## Create and configure Xamarin.Forms app
+
+### Create a new Xamarin app in Visual Studio
+
+![Create a new Xamarin.Forms app](Images/CreateNewMobileApp.jpg)
+
+### add FlyoutItem in file AppShell.xaml of the XamarinBookStoreApp core project
+
+```html
+    <FlyoutItem Title="IdentityServer" Icon="icon_identity_server.png">
+        <ShellContent Route="IdentityConnectPage" ContentTemplate="{DataTemplate local:IdentityConnectPage}" />
+    </FlyoutItem>
+    // ... other FlyoutItems here
+```
+
+### Add a new ContentPage IdentityConnectPage.xaml in the Views folder of the XamarinBookStoreApp core project
+
+```html
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="XamarinBookStoreApp.Views.IdentityConnectPage">
+    <ContentPage.Content>
+        <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
+            <Button VerticalOptions="Center" Text="Connect" Command="{Binding ConnectToIdentityServerCommand}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
+```
+
+### Set BindingContext in IdentityConnectPage.xaml.cs in the Views folder
+
+```csharp
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+using XamarinBookStoreApp.ViewModels;
+
+namespace XamarinBookStoreApp.Views
+{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class IdentityConnectPage : ContentPage
+    {
+        public IdentityConnectPage()
+        {
+            InitializeComponent();
+            this.BindingContext = new IdentityConnectViewModel();
+        }
+    }
+}
+```
+
+### Create a new file IdentityConnectViewModel.cs in the ViewModels folder of the XamarinBookStoreApp project
+
+```csharp
+using System;
+using Xamarin.Forms;
+
+namespace XamarinBookStoreApp.ViewModels
+{
+    public class IdentityConnectViewModel : BaseViewModel
+    {
+        public Command ConnectToIdentityServerCommand { get; }
+
+        public IdentityConnectViewModel()
+        {
+            ConnectToIdentityServerCommand = new Command(ConnectToIdentityServer);
+        }
+
+        private void ConnectToIdentityServer(object obj)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+```
+
+
+
+
+
+
