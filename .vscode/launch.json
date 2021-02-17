@@ -9,7 +9,7 @@
           "type": "blazorwasm",
           "request": "launch",
           "cwd": "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.Blazor",
-          "url": "https://localhost:44307"
+          "url": "https://192.168.1.106:44307"
       },
       {
           "name": "ApiDevelopment",
@@ -42,6 +42,50 @@
           "program": "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.HttpApi.Host/bin/Debug/net5.0/XamarinBookStoreApi.HttpApi.Host.dll",
           "args": [],
           "cwd": "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.HttpApi.Host",
+          "stopAtEntry": false,
+          // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+          "serverReadyAction": {
+              "action": "openExternally",
+              "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+          },
+          "env": {
+              "ASPNETCORE_ENVIRONMENT": "Staging"
+          },
+          "sourceFileMap": {
+              "/Views": "${workspaceFolder}/Views"
+          }
+      },
+      {
+          "name": "IdentityServerDevelopment",
+          "type": "coreclr",
+          "request": "launch",
+          "preLaunchTask": "buildIdentityServer",
+          // If you have changed target frameworks, make sure to update the program path.
+          "program": "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.IdentityServer/bin/Debug/net5.0/XamarinBookStoreApi.IdentityServer.dll",
+          "args": [],
+          "cwd": "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.IdentityServer",
+          "stopAtEntry": false,
+          // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+          "serverReadyAction": {
+              "action": "openExternally",
+              "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+          },
+          "env": {
+              "ASPNETCORE_ENVIRONMENT": "Development"
+          },
+          "sourceFileMap": {
+              "/Views": "${workspaceFolder}/Views"
+          }
+      },
+{
+          "name": "IdentityServerStaging",
+          "type": "coreclr",
+          "request": "launch",
+          "preLaunchTask": "buildIdentityServer",
+          // If you have changed target frameworks, make sure to update the program path.
+          "program": "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.IdentityServer/bin/Debug/net5.0/XamarinBookStoreApi.IdentityServer.dll",
+          "args": [],
+          "cwd": "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.IdentityServer",
           "stopAtEntry": false,
           // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
           "serverReadyAction": {
@@ -98,7 +142,7 @@
   "compounds": [
       {
           "name": "Compound",
-          "configurations": ["ApiDevelopment", "Blazor"]
+          "configurations": ["ApiDevelopment", "IdentityServerDevelopment","Blazor"]
       }
   ]
-}
+}   

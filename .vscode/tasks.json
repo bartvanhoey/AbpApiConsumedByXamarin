@@ -7,7 +7,19 @@
            "type": "process",
            "args": [
                "build",
-               "${workspaceFolder}/XamarinBookStoreApi/src//XamarinBookStoreApi.HttpApi.Host/XamarinBookStoreApi.HttpApi.Host.csproj",
+               "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.HttpApi.Host/XamarinBookStoreApi.HttpApi.Host.csproj",
+               "/property:GenerateFullPaths=true",
+               "/consoleloggerparameters:NoSummary"
+           ],
+           "problemMatcher": "$msCompile"
+       },
+       {
+           "label": "buildIdentityServer",
+           "command": "dotnet",
+           "type": "process",
+           "args": [
+               "build",
+               "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.IdentityServer/XamarinBookStoreApi.IdentityServer.csproj",
                "/property:GenerateFullPaths=true",
                "/consoleloggerparameters:NoSummary"
            ],
@@ -19,7 +31,7 @@
            "type": "process",
            "args": [
                "build",
-               "${workspaceFolder}/XamarinBookStoreApi/src//XamarinBookStoreApi.DbMigrator/XamarinBookStoreApi.DbMigrator.csproj",
+               "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.DbMigrator/XamarinBookStoreApi.DbMigrator.csproj",
                "/property:GenerateFullPaths=true",
                "/consoleloggerparameters:NoSummary"
            ],
@@ -31,7 +43,7 @@
            "type": "process",
            "args": [
                "publish",
-               "${workspaceFolder}/XamarinBookStoreApi/src//XamarinBookStoreApi.HttpApi.Host/XamarinBookStoreApi.HttpApi.Host.csproj",
+               "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.HttpApi.Host/XamarinBookStoreApi.HttpApi.Host.csproj",
                "/property:GenerateFullPaths=true",
                "/consoleloggerparameters:NoSummary"
            ],
@@ -44,7 +56,7 @@
            "args": [
                "watch",
                "run",
-               "${workspaceFolder}/XamarinBookStoreApi/src//XamarinBookStoreApi.HttpApi.Host/XamarinBookStoreApi.HttpApi.Host.csproj",
+               "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.HttpApi.Host/XamarinBookStoreApi.HttpApi.Host.csproj",
                "/property:GenerateFullPaths=true",
                "/consoleloggerparameters:NoSummary"
            ],
