@@ -161,9 +161,9 @@ namespace XamarinBookStoreApp.ViewModels
 }
 ```
 
-### Run the XamarinBookStoreApp
+### Run the XamarinBookStoreApp to see everything works till now
 
-
+![Mobile app start screen](Images/mobile_app_start_screen.jpg)
 
 
 
