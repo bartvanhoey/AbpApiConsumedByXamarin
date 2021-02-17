@@ -77,6 +77,7 @@ namespace XamarinBookStoreApi.Blazor
                 options.ProviderOptions.DefaultScopes.Add("role");
                 options.ProviderOptions.DefaultScopes.Add("email");
                 options.ProviderOptions.DefaultScopes.Add("phone");
+                
             });
         }
 

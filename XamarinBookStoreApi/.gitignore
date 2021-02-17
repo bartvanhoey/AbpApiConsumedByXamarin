@@ -256,5 +256,5 @@ src/XamarinBookStoreApi.Web/Logs/*
 src/XamarinBookStoreApi.Web.Host/Logs/*
 src/XamarinBookStoreApi.IdentityServer/Logs/*
 src/XamarinBookStoreApi.HttpApi.Host/Logs/*
-src/XamarinBookStoreApi.HttpApi.Host/Logs/*
+src/XamarinBookStoreApi.HttpApi.HostWithIds/Logs/*
 src/XamarinBookStoreApi.DbMigrator/Logs/*
