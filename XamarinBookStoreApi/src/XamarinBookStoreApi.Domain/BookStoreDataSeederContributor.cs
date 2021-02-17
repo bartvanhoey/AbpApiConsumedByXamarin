@@ -8,8 +8,7 @@ using XamarinBookStoreApi.Domain.Shared.Books;
 
 namespace XamarinBookStoreApi.Domain
 {
-    public class BookStoreDataSeederContributor
-        : IDataSeedContributor, ITransientDependency
+    public class BookStoreDataSeederContributor : IDataSeedContributor, ITransientDependency
     {
         private readonly IRepository<Book, Guid> _bookRepository;
 
