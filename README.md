@@ -470,6 +470,37 @@ Open the Properties window of the Android project and update the Compile using A
                 }
             }
         }
+
+        public class BooksResult
+        {
+            public int TotalCount { get; set; }
+            public List<BookDto> Items { get; set; }
+        }
+
+        public class BookDto
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; }
+            public BookType Type { get; set; }
+            public DateTime PublishDate { get; set; }
+            public float Price { get; set; }
+            public DateTime? LastModificationTime { get; set; }
+            public Guid? LastModifierId { get; set; }
+        }
+
+       public enum BookType
+       {
+            Undefined,
+            Adventure,
+            Biography,
+            Dystopia,
+            Fantastic,
+            Horror,
+            Science,
+            ScienceFiction,
+            Poetry
+        }
+
     }
 ```
 
