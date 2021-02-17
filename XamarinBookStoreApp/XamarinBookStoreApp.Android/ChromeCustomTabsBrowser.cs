@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Support.CustomTabs;
+using AndroidX.Browser.CustomTabs;
 using IdentityModel.OidcClient.Browser;
 using Plugin.CurrentActivity;
 using System;

@@ -87,6 +87,11 @@ Run the XamarinBookStoreApi.DbMigrator project to apply the database migrations.
 
 ### Create Xamarin.Forms app and setup basic workflow
 
+#### Update following Nuget Packages
+
+<PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
+<PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+
 #### Create a new Xamarin app in Visual Studio
 
 ![Create a new Xamarin.Forms app](Images/CreateNewMobileApp.jpg)
@@ -220,7 +225,7 @@ Run the XamarinBookStoreApp.
   }
 ```
 
-### Generate a ChromeCustomTabsBrowser.cs class in a new file and update its contents
+#### Generate a ChromeCustomTabsBrowser.cs class in a new file and update its contents
 
 ```csharp
   using Android.Support.CustomTabs;
@@ -285,7 +290,7 @@ Run the XamarinBookStoreApp.
 
 Hover over IBrowser and Install package IdentityModel.OidcClient.Browser;  
 
-### Generate a OidcCallbackActivity.cs class in a new file and update its contents
+#### Generate a OidcCallbackActivity.cs class in a new file and update its contents
 
 ```csharp
   using Android.App;
@@ -323,4 +328,28 @@ Hover over IBrowser and Install package IdentityModel.OidcClient.Browser;
       }
   }
 ```
+
+#### Add a network_security_config.xml to folder Resources/xml in the Android project
+
+```html
+    <?xml version="1.0" encoding="utf-8"?>
+    <network-security-config>
+        <domain-config cleartextTrafficPermitted="true">
+            <domain includeSubdomains="true"><your-ip-address-here></domain>
+        </domain-config>
+    </network-security-config>
+```
+
+You need to add this file to overcome the error below:
+
+```bash
+    System.InvalidOperationException: 'Error loading discovery document: Error connecting to https://x.x.x.x:xxxx/.well-known/openid-configuration. java.security.cert.CertPathValidatorException: Trust anchor for certification path not found..'
+```
+
+
+
+
+
+
+### Make the XamarinBookStoreApp IdentityServer ready
 
