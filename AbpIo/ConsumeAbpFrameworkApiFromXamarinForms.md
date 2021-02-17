@@ -1,4 +1,4 @@
-## Consume an ABP Framework API by a Xamarin.Forms application
+## ABP Framework API consumed by a Xamarin.Forms application
 
 ## Introduction
 
