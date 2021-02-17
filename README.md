@@ -104,7 +104,8 @@ Run the XamarinBookStoreApi.DbMigrator project to apply the database migrations.
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="XamarinBookStoreApp.Views.IdentityConnectPage">
+             x:Class="XamarinBookStoreApp.Views.IdentityConnectPage"
+               Title="{Binding Title}">
     <ContentPage.Content>
         <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
             <Button VerticalOptions="Center" Text="Connect" Command="{Binding ConnectToIdentityServerCommand}"/>
@@ -148,6 +149,7 @@ namespace XamarinBookStoreApp.ViewModels
 
         public IdentityConnectViewModel()
         {
+            Title = "Connect Me";
             ConnectToIdentityServerCommand = new Command(ConnectToIdentityServer);
         }
 

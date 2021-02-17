@@ -9,6 +9,18 @@ namespace XamarinBookStoreApp.ViewModels
 
         public IdentityConnectViewModel()
         {
+            Title = "Connect Me";
+
+
+
+
+
+
+
+
+
+
+
             ConnectToIdentityServerCommand = new Command(ConnectToIdentityServer);
         }
 
