@@ -83,13 +83,15 @@ Run the XamarinBookStoreApi.DbMigrator project to apply the database migrations.
 
 ### Run Identity, Api and Blazor project
 
-## Create and configure Xamarin.Forms app
+## Xamarin.Forms app
 
-### Create a new Xamarin app in Visual Studio
+### Create Xamarin.Forms app and configure basic setup
+
+#### Create a new Xamarin app in Visual Studio
 
 ![Create a new Xamarin.Forms app](Images/CreateNewMobileApp.jpg)
 
-### add FlyoutItem in file AppShell.xaml of the XamarinBookStoreApp core project
+#### add FlyoutItem in file AppShell.xaml of the XamarinBookStoreApp core project
 
 ```html
     <FlyoutItem Title="IdentityServer" Icon="icon_identity_server.png">
@@ -98,7 +100,7 @@ Run the XamarinBookStoreApi.DbMigrator project to apply the database migrations.
     // ... other FlyoutItems here
 ```
 
-### Add a new ContentPage IdentityConnectPage.xaml in the Views folder of the XamarinBookStoreApp core project
+#### Add a new ContentPage IdentityConnectPage.xaml in the Views folder of the XamarinBookStoreApp core project
 
 ```html
 <?xml version="1.0" encoding="utf-8" ?>
@@ -114,7 +116,7 @@ Run the XamarinBookStoreApi.DbMigrator project to apply the database migrations.
 </ContentPage>
 ```
 
-### Set BindingContext in IdentityConnectPage.xaml.cs in the Views folder
+#### Set BindingContext in IdentityConnectPage.xaml.cs in the Views folder
 
 ```csharp
 using Xamarin.Forms;
@@ -135,7 +137,7 @@ namespace XamarinBookStoreApp.Views
 }
 ```
 
-### Create a new file IdentityConnectViewModel.cs in the ViewModels folder of the XamarinBookStoreApp project
+#### Create a new file IdentityConnectViewModel.cs in the ViewModels folder of the XamarinBookStoreApp project
 
 ```csharp
 using System;
@@ -161,7 +163,11 @@ namespace XamarinBookStoreApp.ViewModels
 }
 ```
 
-### Run the XamarinBookStoreApp to see everything works till now
+#### Run the XamarinBookStoreApp
+
+Open the Android Device Manager and launch an android device.
+
+Run the XamarinBookStoreApp.
 
 ![Mobile app start screen](Images/mobile_app_start_screen.jpg)
 
