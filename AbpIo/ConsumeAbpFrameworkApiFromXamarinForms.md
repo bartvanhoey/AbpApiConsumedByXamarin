@@ -39,7 +39,7 @@ Hit CTRL+SHIFT+H to replace all localhost instances in the XamarinBookStoreApi p
     https://192.168.1.106:44349" => "https://192.168.1.106:44349"
 ```
 
-![IP-address](Images/IP_address.jpg)
+![IP-address](../Images/IP_address.jpg)
 
 ### Add XamarinBookStoreApi_Xamarin section in appsettings.json file of the XamarinBookStoreApi.DbMigrator project
 
@@ -122,7 +122,7 @@ Start the IdentityServer, API and Blazor project to see if all projects run succ
 
 #### Create a new Xamarin app in Visual Studio (Flyout template)
 
-![Create a new Xamarin.Forms app](Images/CreateNewMobileApp.jpg)
+![Create a new Xamarin.Forms app](../Images/CreateNewMobileApp.jpg)
 
 #### Update Nuget Packages
 
@@ -209,17 +209,17 @@ namespace XamarinBookStoreApp.ViewModels
 
 Open the Android Device Manager and launch an the Android Device of your Choice. I used the Pixel2 with Android10 and API 29.
 
-![Pixel2](Images/pixel2_q10_api29.jpg)
+![Pixel2](../Images/pixel2_q10_api29.jpg)
 
 Start the Xamarin.Forms app and stop it again when it runs successfully. 
 
-![Mobile app start screen](Images/mobile_app_start_screen.jpg)
+![Mobile app start screen](../Images/mobile_app_start_screen.jpg)
 
 ### Make the XamarinBookStoreApp.Android IdentityServer ready
 
 #### Open Nuget Package Manager and install Plugin.CurrentActivity Nuget Package in the Android project
 
-![Plugin.CurrentActivity](Images/plugin_currentactivity.jpg)
+![Plugin.CurrentActivity](../Images/plugin_currentactivity.jpg)
 
 #### Open class MainActivity and update its contents
 
@@ -381,13 +381,13 @@ Hover over IBrowser and **Install package IdentityModel.OidcClient.Browser**;
 
 You need to add file network_security_config to overcome the Privacy Error - Your connection is not private below:
 
-![Your connection is not private](Images/your_connection_is_not_private.jpg)
+![Your connection is not private](../Images/your_connection_is_not_private.jpg)
 
 #### Update Target Framework to Android 10.0 (Q)
 
 Open the Properties window of the Android project and update the Compile using Android version (Target Framework)
 
-![Android10](Images/android_10.jpg)
+![Android10](../Images/android_10.jpg)
 
 ### Make the XamarinBookStoreApp IdentityServer ready
 
@@ -477,7 +477,7 @@ Open the Properties window of the Android project and update the Compile using A
 
 If all goes well, your Xamarin.Forms opens a browser window where you need to authenticate with your administrator credentials (admin - 1q2w3E*). Once logged in, the app makes a call to the ABP Framework API that returns the books from the database.
 
-![Api consumed by Xamarin app](Images/api_consumed_by_xamarin_app.gif)
+![Api consumed by Xamarin app](../Images/api_consumed_by_xamarin_app.gif)
 
 Et voilà! As you can see  in the animated gif the Xamarin.Forms app successfully retrieves data from the database by connecting to the IdentityServer4 and consuming the ABP Framework API.
 

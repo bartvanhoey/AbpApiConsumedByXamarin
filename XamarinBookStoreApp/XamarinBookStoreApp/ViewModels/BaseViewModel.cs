@@ -7,12 +7,14 @@ using Xamarin.Forms;
 
 using XamarinBookStoreApp.Models;
 using XamarinBookStoreApp.Services;
+using XamarinBookStoreApp.Services.Books;
 
 namespace XamarinBookStoreApp.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
         public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
+        public IBooksDataStore<Book> BooksDataStore => DependencyService.Get<IBooksDataStore<Book>>();
 
         bool isBusy = false;
         public bool IsBusy

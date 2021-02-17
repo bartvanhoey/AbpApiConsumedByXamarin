@@ -2,16 +2,16 @@
 using IdentityModel.OidcClient.Browser;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using XamarinBookStoreApp.Services.Books;
 
 namespace XamarinBookStoreApp.ViewModels
 {
-    public class IdentityConnectViewModel : BaseViewModel
+    public partial class IdentityConnectViewModel : BaseViewModel
     {
         OidcClient _client;
         LoginResult _result;
@@ -52,14 +52,9 @@ namespace XamarinBookStoreApp.ViewModels
 
         private async Task ConnectToIdentityServerAsync()
         {
-            string outputText;
             _result = await _client.LoginAsync(new LoginRequest());
 
-            if (_result.IsError)
-            {
-                outputText = _result.Error;
-                return;
-            }
+            if (_result.IsError) return;
 
             var sb = new StringBuilder(128);
             foreach (var claim in _result.User.Claims)
@@ -70,60 +65,13 @@ namespace XamarinBookStoreApp.ViewModels
             sb.AppendFormat("\n{0}: {1}\n", "refresh token", _result?.RefreshToken ?? "none");
             sb.AppendFormat("\n{0}: {1}\n", "access token", _result.AccessToken);
 
-            outputText = sb.ToString();
-
-
-            //Application.Current.Properties["accessToken"] = _result?.AccessToken;
-
-            //await SecureStorage.SetAsync("accessToken", _result.AccessToken);
-
             _apiClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _result?.AccessToken ?? "");
             var response = await _apiClient.Value.GetAsync("https://192.168.1.106:44323/api/app/book");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<BooksResult>(content);
+                var booksResult = JsonConvert.DeserializeObject<BooksResult>(content);
             }
-
-
-
-
-
-        }
-
-        public class BooksResult
-        {
-            public int TotalCount { get; set; }
-            public List<BookDto> Items { get; set; }
-        }
-
-        public class BookDto
-        {
-
-            public Guid Id { get; set; }
-            public string Name { get; set; }
-
-            public BookType Type { get; set; }
-
-            public DateTime PublishDate { get; set; }
-
-            public float Price { get; set; }
-
-            public DateTime? LastModificationTime { get; set; }
-            public Guid? LastModifierId { get; set; }
-        }
-
-        public enum BookType
-        {
-            Undefined,
-            Adventure,
-            Biography,
-            Dystopia,
-            Fantastic,
-            Horror,
-            Science,
-            ScienceFiction,
-            Poetry
         }
     }
 }
