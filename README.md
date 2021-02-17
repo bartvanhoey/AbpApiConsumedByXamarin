@@ -85,7 +85,7 @@ Run the XamarinBookStoreApi.DbMigrator project to apply the database migrations.
 
 ## Xamarin.Forms app
 
-### Create Xamarin.Forms app and configure basic setup
+### Create Xamarin.Forms app and setup basic workflow
 
 #### Create a new Xamarin app in Visual Studio
 
@@ -103,38 +103,38 @@ Run the XamarinBookStoreApi.DbMigrator project to apply the database migrations.
 #### Add a new ContentPage IdentityConnectPage.xaml in the Views folder of the XamarinBookStoreApp core project
 
 ```html
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="XamarinBookStoreApp.Views.IdentityConnectPage"
-               Title="{Binding Title}">
-    <ContentPage.Content>
-        <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
-            <Button VerticalOptions="Center" Text="Connect" Command="{Binding ConnectToIdentityServerCommand}"/>
-        </StackLayout>
-    </ContentPage.Content>
-</ContentPage>
+  <?xml version="1.0" encoding="utf-8" ?>
+  <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              x:Class="XamarinBookStoreApp.Views.IdentityConnectPage"
+                Title="{Binding Title}">
+      <ContentPage.Content>
+          <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
+              <Button VerticalOptions="Center" Text="Connect" Command="{Binding ConnectToIdentityServerCommand}"/>
+          </StackLayout>
+      </ContentPage.Content>
+  </ContentPage>
 ```
 
 #### Set BindingContext in IdentityConnectPage.xaml.cs in the Views folder
 
 ```csharp
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using XamarinBookStoreApp.ViewModels;
+  using Xamarin.Forms;
+  using Xamarin.Forms.Xaml;
+  using XamarinBookStoreApp.ViewModels;
 
-namespace XamarinBookStoreApp.Views
-{
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class IdentityConnectPage : ContentPage
-    {
-        public IdentityConnectPage()
-        {
-            InitializeComponent();
-            this.BindingContext = new IdentityConnectViewModel();
-        }
-    }
-}
+  namespace XamarinBookStoreApp.Views
+  {
+      [XamlCompilation(XamlCompilationOptions.Compile)]
+      public partial class IdentityConnectPage : ContentPage
+      {
+          public IdentityConnectPage()
+          {
+              InitializeComponent();
+              this.BindingContext = new IdentityConnectViewModel();
+          }
+      }
+  }
 ```
 
 #### Create a new file IdentityConnectViewModel.cs in the ViewModels folder of the XamarinBookStoreApp project
@@ -171,6 +171,156 @@ Run the XamarinBookStoreApp.
 
 ![Mobile app start screen](Images/mobile_app_start_screen.jpg)
 
+### Make the XamarinBookStoreApp.Android IdentityServer ready
+
+#### Open Nuget Package Manager and install Plugin.CurrentActivity Nuget Package in the Android app
+
+![Plugin.CurrentActivity](Images/plugin_currentactivity.jpg)
+
+#### Open class MainActivity and update its contents
+
+```csharp
+  // Add the 2 using statements below
+  using Xamarin.Forms;
+  using Plugin.CurrentActivity;
+  
+  using Android.App;
+  using Android.Content.PM;
+  using Android.Runtime;
+  using Android.OS;
+
+  namespace XamarinBookStoreApp.Droid
+  {
+      [Activity(Label = "XamarinBookStoreApp", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize )]
+      public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+      {
+          protected override void OnCreate(Bundle savedInstanceState)
+          {   
+              // Add this line of code
+              DependencyService.Register<ChromeCustomTabsBrowser>();
+
+              TabLayoutResource = Resource.Layout.Tabbar;
+              ToolbarResource = Resource.Layout.Toolbar;
+
+              base.OnCreate(savedInstanceState);
+
+              Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+              global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+              // Add this line of code
+              CrossCurrentActivity.Current.Init(this, savedInstanceState);
+              LoadApplication(new App());
+          }
+          public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+          {
+              Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+              base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+          }
+      }
+  }
+```
+
+### Generate a ChromeCustomTabsBrowser.cs class in a new file and update its contents
+
+```csharp
+  using Android.Support.CustomTabs;
+  using Android.App;
+  using Android.Content;
+  using Plugin.CurrentActivity;
+  using System;
+  using System.Threading;
+  using System.Threading.Tasks;
+
+  namespace XamarinBookStoreApp.Droid
+  {
+      public class ChromeCustomTabsBrowser : IBrowser
+      {
+          private readonly Activity _context;
+          private readonly CustomTabsActivityManager _manager;
+
+          public ChromeCustomTabsBrowser() : this(CrossCurrentActivity.Current.Activity) { }
 
 
+          public ChromeCustomTabsBrowser(Activity context)
+          {
+              _context = context;
+              _manager = new CustomTabsActivityManager(_context);
+          }
+
+          public Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken = default)
+          {
+              var task = new TaskCompletionSource<BrowserResult>();
+
+              var builder = new CustomTabsIntent.Builder(_manager.Session)
+                //.SetToolbarColor(Color.FromArgb(255, 52, 152, 219))
+                .SetShowTitle(true)
+                .EnableUrlBarHiding();
+
+              var customTabsIntent = builder.Build();
+
+              // ensures the intent is not kept in the history stack, which makes
+              // sure navigating away from it will close it
+              customTabsIntent.Intent.AddFlags(ActivityFlags.NoHistory);
+
+              Action<string> callback = null;
+              callback = url =>
+              {
+                  OidcCallbackActivity.Callbacks -= callback;
+
+                  task.SetResult(new BrowserResult()
+                  {
+                      Response = url
+                  });
+              };
+
+              OidcCallbackActivity.Callbacks += callback;
+
+              customTabsIntent.LaunchUrl(_context, Android.Net.Uri.Parse(options.StartUrl));
+
+              return task.Task;
+          }
+      }
+  }
+```
+
+Hover over IBrowser and Install package IdentityModel.OidcClient.Browser;  
+
+### Generate a OidcCallbackActivity.cs class in a new file and update its contents
+
+```csharp
+  using Android.App;
+  using Android.Content;
+  using Android.OS;
+  using Android.Util;
+  using System;
+
+  namespace XamarinBookStoreApp.Droid
+  {
+      [Activity(Label = "OidcCallbackActivity")]
+      [IntentFilter(new[] { Intent.ActionView },
+              Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
+              DataScheme = "xamarinformsclients")]
+      //DataHost = "callback")]
+      public class OidcCallbackActivity : Activity
+      {
+          public static event Action<string> Callbacks;
+
+          public OidcCallbackActivity()
+          {
+              Log.Debug("OidcCallbackActivity", "constructing OidcCallbackActivity");
+          }
+
+          protected override void OnCreate(Bundle savedInstanceState)
+          {
+              base.OnCreate(savedInstanceState);
+
+              Callbacks?.Invoke(Intent.DataString);
+
+              Finish();
+
+              StartActivity(typeof(MainActivity));
+          }
+      }
+  }
+```
 

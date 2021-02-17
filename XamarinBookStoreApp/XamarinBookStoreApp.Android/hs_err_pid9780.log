@@ -1,0 +1,148 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 1048576 bytes for AllocateHeap
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (memory/allocation.inline.hpp:61), pid=9780, tid=0x0000000000005750
+#
+# JRE version:  (8.0_112-b15) (build )
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.112-b15 mixed mode windows-amd64 compressed oops)
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000000002ef2800):  JavaThread "Unknown thread" [_thread_in_vm, id=22352, stack(0x0000000002cf0000,0x0000000002df0000)]
+
+Stack: [0x0000000002cf0000,0x0000000002df0000]
+[error occurred during error reporting (printing stack bounds), id 0xc0000005]
+
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0x0000000002ef2800 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=22352, stack(0x0000000002cf0000,0x0000000002df0000)]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap:
+ PSYoungGen      total 75776K, used 1300K [0x000000076b600000, 0x0000000770a80000, 0x00000007c0000000)
+  eden space 65024K, 2% used [0x000000076b600000,0x000000076b7451f8,0x000000076f580000)
+  from space 10752K, 0% used [0x0000000770000000,0x0000000770000000,0x0000000770a80000)
+  to   space 10752K, 0% used [0x000000076f580000,0x000000076f580000,0x0000000770000000)
+ ParOldGen       total 173568K, used 0K [0x00000006c2200000, 0x00000006ccb80000, 0x000000076b600000)
+  object space 173568K, 0% used [0x00000006c2200000,0x00000006c2200000,0x00000006ccb80000)
+ Metaspace       used 770K, capacity 4480K, committed 4480K, reserved 1056768K
+  class space    used 75K, capacity 384K, committed 384K, reserved 1048576K
+
+Card table byte_map: [0x00000000123b0000,0x0000000012ba0000] byte_map_base: 0x000000000ed9f000
+
+Marking Bits: (ParMarkBitMap*) 0x00000000600ca6d0
+ Begin Bits: [0x00000000138f0000, 0x0000000017868000)
+ End Bits:   [0x0000000017868000, 0x000000001b7e0000)
+
+Polling page: 0x0000000002b70000
+
+CodeCache: size=245760Kb used=328Kb max_used=328Kb free=245431Kb
+ bounds [0x0000000002ff0000, 0x0000000003260000, 0x0000000011ff0000]
+ total_blobs=58 nmethods=0 adapters=38
+ compilation: enabled
+
+Compilation events (0 events):
+No events
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+Events (10 events):
+Event: 0.030 loading class java/lang/Short
+Event: 0.030 loading class java/lang/Short done
+Event: 0.030 loading class java/lang/Integer
+Event: 0.031 loading class java/lang/Integer done
+Event: 0.031 loading class java/lang/Long
+Event: 0.031 loading class java/lang/Long done
+Event: 0.032 loading class java/lang/NullPointerException
+Event: 0.032 loading class java/lang/NullPointerException done
+Event: 0.032 loading class java/lang/ArithmeticException
+Event: 0.032 loading class java/lang/ArithmeticException done
+
+
+Dynamic libraries:
+0x00007ff7872c0000 - 0x00007ff7872f7000 	C:\Program Files\Java\jdk1.8.0_112\bin\java.exe
+0x00007ff9ee3d0000 - 0x00007ff9ee5c6000 	C:\WINDOWS\SYSTEM32\ntdll.dll
+0x00007ff9edab0000 - 0x00007ff9edb6d000 	C:\WINDOWS\System32\KERNEL32.DLL
+0x00007ff9ebc40000 - 0x00007ff9ebf09000 	C:\WINDOWS\System32\KERNELBASE.dll
+0x00007ff9edec0000 - 0x00007ff9edf6c000 	C:\WINDOWS\System32\ADVAPI32.dll
+0x00007ff9ed4c0000 - 0x00007ff9ed55e000 	C:\WINDOWS\System32\msvcrt.dll
+0x00007ff9edf80000 - 0x00007ff9ee01c000 	C:\WINDOWS\System32\sechost.dll
+0x00007ff9ecb80000 - 0x00007ff9eccab000 	C:\WINDOWS\System32\RPCRT4.dll
+0x00007ff9edcb0000 - 0x00007ff9ede50000 	C:\WINDOWS\System32\USER32.dll
+0x00007ff9ebf10000 - 0x00007ff9ebf32000 	C:\WINDOWS\System32\win32u.dll
+0x00007ff9ec560000 - 0x00007ff9ec58a000 	C:\WINDOWS\System32\GDI32.dll
+0x00007ff9ec320000 - 0x00007ff9ec42b000 	C:\WINDOWS\System32\gdi32full.dll
+0x00007ff9ec280000 - 0x00007ff9ec31d000 	C:\WINDOWS\System32\msvcp_win.dll
+0x00007ff9ebb10000 - 0x00007ff9ebc10000 	C:\WINDOWS\System32\ucrtbase.dll
+0x00007ff9d81a0000 - 0x00007ff9d843b000 	C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.19041.746_none_ca02b4b61b8320a4\COMCTL32.dll
+0x00007ff9ed560000 - 0x00007ff9ed590000 	C:\WINDOWS\System32\IMM32.DLL
+0x0000000060150000 - 0x0000000060222000 	C:\Program Files\Java\jdk1.8.0_112\jre\bin\msvcr100.dll
+0x000000005f8b0000 - 0x000000006014a000 	C:\Program Files\Java\jdk1.8.0_112\jre\bin\server\jvm.dll
+0x00007ff9edf70000 - 0x00007ff9edf78000 	C:\WINDOWS\System32\PSAPI.DLL
+0x00007ff9d9710000 - 0x00007ff9d9737000 	C:\WINDOWS\SYSTEM32\WINMM.dll
+0x00007ff9e1150000 - 0x00007ff9e115a000 	C:\WINDOWS\SYSTEM32\VERSION.dll
+0x00007ff9daf40000 - 0x00007ff9daf49000 	C:\WINDOWS\SYSTEM32\WSOCK32.dll
+0x00007ff9edb70000 - 0x00007ff9edbdb000 	C:\WINDOWS\System32\WS2_32.dll
+0x00000000607d0000 - 0x00000000607df000 	C:\Program Files\Java\jdk1.8.0_112\jre\bin\verify.dll
+0x00000000607a0000 - 0x00000000607c9000 	C:\Program Files\Java\jdk1.8.0_112\jre\bin\java.dll
+0x0000000060780000 - 0x0000000060796000 	C:\Program Files\Java\jdk1.8.0_112\jre\bin\zip.dll
+
+VM Arguments:
+java_command: C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Xamarin\Android\apksigner.jar sign --ks C:\Users\bartv\AppData\Local\Xamarin\Mono for Android\debug.keystore --ks-pass pass:android --ks-key-alias androiddebugkey --key-pass pass:android --min-sdk-version 21 --max-sdk-version 28 D:\_AbpBlazor\_AbpArticles\AbpApiConsumedByXamarin\XamarinBookStoreApp\XamarinBookStoreApp.Android\bin\Debug\com.companyname.xamarinbookstoreapp-Signed.apk
+java_class_path (initial): C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Xamarin\Android\apksigner.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files\Java\jdk1.8.0_112
+USERNAME=bartv
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 94 Stepping 3, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 10.0 , 64 bit Build 19041 (10.0.19041.804)
+
+CPU:total 8 (4 cores per cpu, 2 threads per core) family 6 model 94 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, ht, tsc, tscinvbit, bmi1, bmi2, adx
+
+Memory: 4k page, physical 16633632k(4438304k free), swap 19629856k(6208k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.112-b15) for windows-amd64 JRE (1.8.0_112-b15), built on Sep 22 2016 21:31:56 by "java_re" with MS VC++ 10.0 (VS2010)
+
+time: Wed Feb 17 15:02:23 2021
+elapsed time: 0 seconds (0d 0h 0m 0s)
+
