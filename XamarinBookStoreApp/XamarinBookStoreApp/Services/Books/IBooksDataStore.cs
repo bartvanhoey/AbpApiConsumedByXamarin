@@ -8,8 +8,8 @@ namespace XamarinBookStoreApp.Services.Books
     {
         Task<bool> AddBookAsync(T Book);
         Task<bool> UpdateBookAsync(T Book);
-        Task<bool> DeleteBookAsync(string id);
-        Task<T> GetBookAsync(string id);
+        Task<bool> DeleteBookAsync(Guid id);
+        Task<T> GetBookAsync(Guid id);
         Task<IEnumerable<T>> GetBooksAsync(bool forceRefresh = false);
     }
 }

@@ -7,16 +7,19 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using XamarinBookStoreApp.Models;
 using XamarinBookStoreApp.Services.Books;
+using XamarinBookStoreApp.Services.IdentityServer;
 
 namespace XamarinBookStoreApp.ViewModels
 {
     public partial class IdentityConnectViewModel : BaseViewModel
     {
+        IIdentityServerService IdentityServerService => DependencyService.Get<IIdentityServerService>();
         OidcClient _client;
         LoginResult _result;
         Lazy<HttpClient> _apiClient;
-
+        //public IBooksDataStore<Book> BooksDataStore => DependencyService.Get<IBooksDataStore<Book>>();
         public Command ConnectToIdentityServerCommand { get; }
 
 
@@ -24,13 +27,7 @@ namespace XamarinBookStoreApp.ViewModels
         {
             Title = "IdentityServer";
 
-            var httpClientHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback =
-                 (message, cert, chain, errors) => { return true; }
-            };
-
-            _apiClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
+            
 
             var browser = DependencyService.Get<IBrowser>();
             var options = new OidcClientOptions
@@ -52,6 +49,14 @@ namespace XamarinBookStoreApp.ViewModels
 
         private async Task ConnectToIdentityServerAsync()
         {
+            var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                 (message, cert, chain, errors) => { return true; }
+            };
+
+            _apiClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
+
             _result = await _client.LoginAsync(new LoginRequest());
 
             if (_result.IsError) return;
@@ -71,6 +76,19 @@ namespace XamarinBookStoreApp.ViewModels
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var booksResult = JsonConvert.DeserializeObject<BooksResult>(content);
+
+                foreach (var bookDto in booksResult.Items)
+                {
+                    await BooksDataStore.AddBookAsync(new Book
+                    {
+                        Id = bookDto.Id,
+                        Name = bookDto.Name,
+                        Price = bookDto.Price,
+                        PublishDate = bookDto.PublishDate,
+                        Type = bookDto.Type
+                    });
+                }
+                await Shell.Current.GoToAsync("//BooksPage");
             }
         }
     }

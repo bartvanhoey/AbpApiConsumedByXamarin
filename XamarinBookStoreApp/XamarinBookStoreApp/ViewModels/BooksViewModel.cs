@@ -19,7 +19,7 @@ namespace XamarinBookStoreApp.ViewModels
 
         public BooksViewModel()
         {
-            Title = "Browse";
+            Title = "Books List";
             Books = new ObservableCollection<Book>();
             LoadBooksCommand = new Command(async () => await ExecuteLoadBooksCommand());
 

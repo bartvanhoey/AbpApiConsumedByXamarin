@@ -2,6 +2,7 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using XamarinBookStoreApp.Services;
+using XamarinBookStoreApp.Services.IdentityServer;
 using XamarinBookStoreApp.Views;
 
 namespace XamarinBookStoreApp
@@ -13,7 +14,8 @@ namespace XamarinBookStoreApp
         {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
+            DependencyService.Register<BooksDataStore>();
+            DependencyService.Register<IdentityServerService>();
             MainPage = new AppShell();
         }
 
