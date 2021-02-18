@@ -122,7 +122,7 @@ Start the IdentityServer, API and Blazor project to see if all projects run succ
 
 #### Create a new Xamarin app in Visual Studio (Flyout template)
 
-![Create a new Xamarin.Forms app](../Images/CreateNewMobileApp.jpg)
+![Create a new Xamarin.Forms app](../Images/create_new_mobile_app.jpg)
 
 #### Update Nuget Packages
 
