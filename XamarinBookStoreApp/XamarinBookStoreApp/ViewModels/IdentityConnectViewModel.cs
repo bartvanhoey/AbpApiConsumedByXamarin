@@ -29,20 +29,20 @@ namespace XamarinBookStoreApp.ViewModels
 
             
 
-            var browser = DependencyService.Get<IBrowser>();
-            var options = new OidcClientOptions
-            {
-                Authority = "https://192.168.1.106:44368",
-                ClientId = "XamarinBookStoreApi_Xamarin",
-                Scope = "email openid profile role phone address XamarinBookStoreApi",
-                ClientSecret = "1q2w3e*",
-                RedirectUri = "xamarinformsclients://callback",
-                Browser = browser,
-                ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
-            };
-            options.BackchannelHandler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = (message, certificate, chain, sslPolicyErrors) => true };
-            options.Policy.Discovery.RequireHttps = true;
-            _client = new OidcClient(options);
+            //var browser = DependencyService.Get<IBrowser>();
+            //var options = new OidcClientOptions
+            //{
+            //    Authority = "https://192.168.1.106:44368",
+            //    ClientId = "XamarinBookStoreApi_Xamarin",
+            //    Scope = "email openid profile role phone address XamarinBookStoreApi",
+            //    ClientSecret = "1q2w3e*",
+            //    RedirectUri = "xamarinformsclients://callback",
+            //    Browser = browser,
+            //    ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
+            //};
+            //options.BackchannelHandler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = (message, certificate, chain, sslPolicyErrors) => true };
+            //options.Policy.Discovery.RequireHttps = true;
+            //_client = new OidcClient(options);
 
             ConnectToIdentityServerCommand = new Command(async () => await ConnectToIdentityServerAsync());
         }
@@ -56,6 +56,8 @@ namespace XamarinBookStoreApp.ViewModels
             };
 
             _apiClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
+
+            _client = IdentityServerService.GetOidcClient();
 
             _result = await _client.LoginAsync(new LoginRequest());
 
