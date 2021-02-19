@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This article is about how you can **connect a Xamarin.Forms application to an ABP Framework application and consume its API**. In this article I have created a ABP Framework application with a separate IdentityServer project and a Blazor UI and added the Books BookStore functionality from the ABP Framework tutorial.
+This article is about how you can **connect a Xamarin.Forms application to an ABP Framework application and consume its API**. For this article I created an ABP Framework application with a separate IdentityServer project and a Blazor UI and added the Books BookStore functionality from the ABP Framework tutorial.
 
-A special thanks goes to **Anton Wieslander** from the **YouTube channel Raw Coding**, where he explains in [Episode.21.2 Xamarin]([https](https://www.youtube.com/watch?v=McTTgj7NEf0&list=PLOeFnOV9YBa7dnrjpOG6lMpcyd7Wn7E8V&index=25&ab_channel=RawCoding))  how to configure **a Xamarin.Forms app to connect to IdentityServer4**.
+A special thanks goes to **Anton Wieslander** from the [Raw Coding](https://www.youtube.com/c/RawCoding) YouTube channel, where he explains in [Episode.21.2 Xamarin]([https](https://www.youtube.com/watch?v=McTTgj7NEf0&list=PLOeFnOV9YBa7dnrjpOG6lMpcyd7Wn7E8V&index=25&ab_channel=RawCoding))  how to configure **a Xamarin.Forms app to connect to IdentityServer4**.
 
 As I don't have an IPhone or MacBook in my possession, I wrote and tested the Xamarin.Forms app only with an Android Device in the Android Device Emulator. The code needed to connect from an IPhone you will need to write yourself.
 
@@ -25,11 +25,13 @@ The following tools are needed to be able to run the solution and follow along. 
 
 ### Create a new ABP project with a separate IdentityServer project
 
-`abp new XamarinBookStoreApi -u blazor -o XamarinBookStoreApi --separate-identity-server`
+```bash
+    abp new XamarinBookStoreApi -u blazor -o XamarinBookStoreApi --separate-identity-server
+```
 
 ### Find your IP address
 
-Open a command prompt and enter `ipconfig` to fin you IP address
+Open a command prompt and enter `ipconfig` to fin you IP address.
 
 ### replace all instances of localhost with your IP address
 
@@ -54,7 +56,7 @@ Hit CTRL+SHIFT+H to replace all localhost instances in the XamarinBookStoreApi p
 
 ### Add Xamarin client IdentityServer configuration
 
-In the CreateClientAsync method in class IdentityServerDataSeedContributor of the XamarinBookStoreApi.Domain project
+In the CreateClientAsync method in class IdentityServerDataSeedContributor of the XamarinBookStoreApi.Domain project.
 
 ```csharp
   // Xamarin Client
@@ -379,7 +381,7 @@ Hover over IBrowser and **Install package IdentityModel.OidcClient.Browser**;
     </network-security-config>
 ```
 
-You need to add file network_security_config to overcome the Privacy Error - Your connection is not private below:
+You need to add file network_security_config.xml to overcome the Privacy Error - Your connection is not private below:
 
 ![Your connection is not private](Images/your_connection_is_not_private.jpg)
 
