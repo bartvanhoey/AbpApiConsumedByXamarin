@@ -8,7 +8,8 @@ namespace XamarinBookStoreApp.Services.IdentityServer
 {
     public interface IIdentityServerService
     {
-        //OidcClient GetOidcClient();
+        Task<string> GetAccessTokenAsync();
         Task<bool> LoginAysnc();
+        Task LogoutAsync();
     }
 }

@@ -16,28 +16,32 @@ namespace XamarinBookStoreApp.ViewModels
 {
     public partial class IdentityConnectViewModel : BaseViewModel
     {
-        IIdentityServerService IdentityServerService => DependencyService.Get<IIdentityServerService>();
+        IIdentityServerService IdentityService => DependencyService.Get<IIdentityServerService>();
         Lazy<HttpClient> _apiClient;
-        public Command ConnectToIdentityServerCommand { get; }
+        public Command LoginIdentityServerCommand { get; }
+        public Command LogoutIdentityServerCommand { get; }
 
         public IdentityConnectViewModel()
         {
             Title = "IdentityServer";
-            ConnectToIdentityServerCommand = new Command(async () => await ConnectToIdentityServerAsync());
+            LoginIdentityServerCommand = new Command(async () => await LoginIdentityServerAsync());
+            LogoutIdentityServerCommand = new Command(async () => await LogoutToIdentityServerAsync());
         }
 
-        private async Task ConnectToIdentityServerAsync()
+        private async Task LogoutToIdentityServerAsync()
         {
-            // connect to IdentityServer
-            var loginResult = await IdentityServerService.LoginAysnc();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                               await IdentityService.LogoutAsync();
+        }
+
+        private async Task LoginIdentityServerAsync()
+        {
+            var loginResult = await IdentityService.LoginAysnc();
             if (!loginResult) return;
 
 
-            // get accesstoken
-            var accessToken = await SecureStorage.GetAsync("access_token");
+            var accessToken = await IdentityService.GetAccessTokenAsync();
 
 
-            // call books API
             var httpClientHandler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }

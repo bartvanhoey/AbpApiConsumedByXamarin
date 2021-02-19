@@ -2,6 +2,7 @@
 using IdentityModel.OidcClient.Browser;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,7 +44,7 @@ namespace XamarinBookStoreApp.Services.IdentityServer
                 {
                     foreach (var claim in loginResult.User.Claims)
                         await SecureStorage.SetAsync(claim.Type, claim.Value);
-                    
+
                     await SecureStorage.SetAsync("access_token", loginResult.AccessToken);
                     await SecureStorage.SetAsync("refresh_token", loginResult.RefreshToken);
                 }
@@ -54,6 +55,34 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             }
 
             return !loginResult.IsError;
+        }
+
+        public async Task<string> GetAccessTokenAsync()
+        {
+            var accessToken = await SecureStorage.GetAsync("access_token");
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(accessToken);
+                var validTo = jwtToken.ValidTo;
+                if (validTo <= DateTime.Now.AddMinutes(1))
+                {
+                    await LoginAysnc();
+                }
+                else return accessToken;
+            }
+            else await LoginAysnc();
+            return await SecureStorage.GetAsync("access_token");
+        }
+
+        public async Task LogoutAsync()
+        {
+            SetOidcClient();
+            var isAccessTokenRemoved = SecureStorage.Remove("access_token");
+            var isRefreshTokenRemoved = SecureStorage.Remove("refresh_token");
+
+            var logoutResult = await OidcClient.LogoutAsync();
+
         }
     }
 }

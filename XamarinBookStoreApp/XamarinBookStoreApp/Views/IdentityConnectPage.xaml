@@ -5,7 +5,8 @@
               Title="{Binding Title}">
     <ContentPage.Content>
         <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
-            <Button VerticalOptions="Center" Text="Connect" Command="{Binding ConnectToIdentityServerCommand}"/>
+            <Button VerticalOptions="Center" Text="Login" Command="{Binding LoginIdentityServerCommand}"/>
+            <Button VerticalOptions="Center" Text="Logout" Command="{Binding LogoutIdentityServerCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
