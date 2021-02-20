@@ -4,14 +4,15 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using XamarinBookStoreApp.Models;
-using XamarinBookStoreApp.Views;
+using XamarinBookStoreApp.Services.Books;
 
 namespace XamarinBookStoreApp.ViewModels
 {
     public class BooksViewModel : BaseViewModel
     {
+        public IBooksDataStore<Book> BooksDataStore => DependencyService.Get<IBooksDataStore<Book>>();
+        public IBooksService BooksService => DependencyService.Get<IBooksService>();
         private Book _selectedBook;
-
         public ObservableCollection<Book> Books { get; }
         public Command LoadBooksCommand { get; }
         public Command AddBookCommand { get; }
@@ -22,20 +23,17 @@ namespace XamarinBookStoreApp.ViewModels
             Title = "Books List";
             Books = new ObservableCollection<Book>();
             LoadBooksCommand = new Command(async () => await ExecuteLoadBooksCommand());
-
             BookTapped = new Command<Book>(OnBookSelected);
-
             AddBookCommand = new Command(OnAddBook);
         }
 
         async Task ExecuteLoadBooksCommand()
         {
             IsBusy = true;
-
             try
             {
                 Books.Clear();
-                var books = await BooksDataStore.GetBooksAsync(true);
+                var books = await BooksService.GetBooksAsync();
                 foreach (var book in books)
                 {
                     Books.Add(book);

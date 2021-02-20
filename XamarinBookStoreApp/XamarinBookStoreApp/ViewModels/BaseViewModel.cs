@@ -14,7 +14,6 @@ namespace XamarinBookStoreApp.ViewModels
     public class BaseViewModel : INotifyPropertyChanged
     {
         public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
-        public IBooksDataStore<Book> BooksDataStore => DependencyService.Get<IBooksDataStore<Book>>();
 
         bool isBusy = false;
         public bool IsBusy
