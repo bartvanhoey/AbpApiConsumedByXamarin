@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using XamarinBookStoreApp.Models;
 using XamarinBookStoreApp.Services.Books;
+using XamarinBookStoreApp.Views;
 
 namespace XamarinBookStoreApp.ViewModels
 {
@@ -67,7 +68,7 @@ namespace XamarinBookStoreApp.ViewModels
 
         private async void OnAddBook(object obj)
         {
-            //await Shell.Current.GoToAsync(nameof(NewBookPage));
+            await Shell.Current.GoToAsync(nameof(AddBookPage));
             //Task.CompletedTask;
         }
 
