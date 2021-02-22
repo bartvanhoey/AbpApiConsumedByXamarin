@@ -5,26 +5,28 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using XamarinBookStoreApp.Models;
 using XamarinBookStoreApp.Services.Books;
+using XamarinBookStoreApp.Services.Books.Dtos;
 using XamarinBookStoreApp.Views;
 
 namespace XamarinBookStoreApp.ViewModels
 {
     public class BooksViewModel : BaseViewModel
     {
-        public IBooksDataStore<Book> BooksDataStore => DependencyService.Get<IBooksDataStore<Book>>();
+        public IBooksDataStore<BookDto> BooksDataStore => DependencyService.Get<IBooksDataStore<BookDto>>();
         public IBooksService BooksService => DependencyService.Get<IBooksService>();
-        private Book _selectedBook;
-        public ObservableCollection<Book> Books { get; }
+        
+        private BookDto _selectedBook;
+        public ObservableCollection<BookDto> Books { get; }
         public Command LoadBooksCommand { get; }
         public Command AddBookCommand { get; }
-        public Command<Book> BookTapped { get; }
+        public Command<BookDto> BookTapped { get; }
 
         public BooksViewModel()
         {
             Title = "Books List";
-            Books = new ObservableCollection<Book>();
+            Books = new ObservableCollection<BookDto>();
             LoadBooksCommand = new Command(async () => await ExecuteLoadBooksCommand());
-            BookTapped = new Command<Book>(OnBookSelected);
+            BookTapped = new Command<BookDto>(OnBookSelected);
             AddBookCommand = new Command(OnAddBook);
         }
 
@@ -34,7 +36,7 @@ namespace XamarinBookStoreApp.ViewModels
             try
             {
                 Books.Clear();
-                var books = await BooksService.GetBooksAsync();
+                var books = await BooksService.GetListAsync();
                 foreach (var book in books)
                 {
                     Books.Add(book);
@@ -56,7 +58,7 @@ namespace XamarinBookStoreApp.ViewModels
             SelectedBook = null;
         }
 
-        public Book SelectedBook
+        public BookDto SelectedBook
         {
             get => _selectedBook;
             set
@@ -72,7 +74,7 @@ namespace XamarinBookStoreApp.ViewModels
             //Task.CompletedTask;
         }
 
-        async void OnBookSelected(Book Book)
+        async void OnBookSelected(BookDto Book)
         {
             if (Book == null)
                 return;

@@ -1,4 +1,4 @@
-﻿namespace XamarinBookStoreApp.ViewModels.Services.Books
+﻿namespace XamarinBookStoreApp.Models.Books
 {
 
     public enum BookType

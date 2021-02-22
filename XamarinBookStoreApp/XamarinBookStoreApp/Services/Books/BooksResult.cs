@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using XamarinBookStoreApp.ViewModels.Services.Books;
+using XamarinBookStoreApp.Services.Books.Dtos;
 
 namespace XamarinBookStoreApp.Services.Books
 {

@@ -4,7 +4,7 @@
              x:Class="XamarinBookStoreApp.Views.BooksPage"
              Title="{Binding Title}"
              xmlns:local="clr-namespace:XamarinBookStoreApp.ViewModels"  
-             xmlns:model="clr-namespace:XamarinBookStoreApp.Models"  
+             xmlns:model="clr-namespace:XamarinBookStoreApp.Services.Books.Dtos"  
              x:Name="BrowseBooksPage">
 
     <ContentPage.ToolbarItems>
@@ -20,7 +20,7 @@
                 SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <StackLayout Padding="10" x:DataType="model:Book">
+                    <StackLayout Padding="10" x:DataType="model:BookDto">
                         <Label Text="{Binding Name}" 
                             LineBreakMode="NoWrap" 
                             Style="{DynamicResource ListItemTextStyle}" 
@@ -30,11 +30,11 @@
                             Style="{DynamicResource ListItemDetailTextStyle}"
                             FontSize="13" />
                         <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer 
+                            <!--<TapGestureRecognizer 
                                 NumberOfTapsRequired="1"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type local:BooksViewModel}}, Path=ItemTapped}"		
                                 CommandParameter="{Binding .}">
-                            </TapGestureRecognizer>
+                            </TapGestureRecognizer>-->
                         </StackLayout.GestureRecognizers>
                     </StackLayout>
                 </DataTemplate>

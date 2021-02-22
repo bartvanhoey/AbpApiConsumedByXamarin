@@ -6,19 +6,21 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using XamarinBookStoreApp.Models;
+using XamarinBookStoreApp.Services.Books.Dtos;
 using XamarinBookStoreApp.Services.IdentityServer;
+
 
 namespace XamarinBookStoreApp.Services.Books
 {
     public class BooksService : IBooksService
     {
-        public IBooksDataStore<Book> BooksDataStore => DependencyService.Get<IBooksDataStore<Book>>();
+        public IBooksDataStore<BookDto> BooksDataStore => DependencyService.Get<IBooksDataStore<BookDto>>();
         public IIdentityServerService IdentityService => DependencyService.Get<IIdentityServerService>();
         Lazy<HttpClient> _apiClient;
 
         private async Task<string> GetAccessTokenAsync() => await IdentityService.GetAccessTokenAsync();
 
-        public async Task<IEnumerable<Book>> GetBooksAsync()
+        public async Task<IEnumerable<BookDto>> GetListAsync()
         {
             var accessToken = await GetAccessTokenAsync();
             var httpClientHandler = new HttpClientHandler
@@ -35,20 +37,36 @@ namespace XamarinBookStoreApp.Services.Books
                 var content = await response.Content.ReadAsStringAsync();
                 var booksResult = JsonConvert.DeserializeObject<BooksResult>(content);
 
-                foreach (var bookDto in booksResult.Items)
+                if (booksResult.TotalCount > 0)
                 {
-                    var book = new Book
+                    await BooksDataStore.DeleteAllBookAsync();
+                    foreach (var bookDto in booksResult.Items)
                     {
-                        Id = bookDto.Id,
-                        Name = bookDto.Name,
-                        Price = bookDto.Price,
-                        PublishDate = bookDto.PublishDate,
-                        Type = bookDto.Type
-                    };
-                    await BooksDataStore.AddBookAsync(book);
+                        await BooksDataStore.AddBookAsync(bookDto);
+                    }
                 }
             }
             return await BooksDataStore.GetBooksAsync(true);
+        }
+
+        public Task<BookDto> GetAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BookDto> CreateAsync(CreateBookDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Guid id, UpdateBookDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

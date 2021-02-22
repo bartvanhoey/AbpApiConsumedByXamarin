@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
 using XamarinBookStoreApp.Models;
+using XamarinBookStoreApp.Models.Books;
 using XamarinBookStoreApp.Services.Books;
-using XamarinBookStoreApp.ViewModels.Services.Books;
+using XamarinBookStoreApp.Services.Books.Dtos;
 
 namespace XamarinBookStoreApp.ViewModels
 {
     public class AddBookViewModel : BaseViewModel
     {
-        public IBooksDataStore<Book> BooksDataStore => DependencyService.Get<IBooksDataStore<Book>>();
+        public IBooksDataStore<BookDto> BooksDataStore => DependencyService.Get<IBooksDataStore<BookDto>>();
+        public IBooksService BooksService => DependencyService.Get<IBooksService>();
+
 
         private string _name;
         public string Name
@@ -62,12 +65,13 @@ namespace XamarinBookStoreApp.ViewModels
 
         private async void OnSave()
         {
-            var newBook = new Book()
+            var newBook = new BookDto()
             {
                 Id = Guid.NewGuid(),
-                
+
             };
 
+            await BooksService.CreateAsync(new CreateBookDto { Name = Name, Price = Price, PublishDate = PublishDate, Type = Type });
             await BooksDataStore.AddBookAsync(newBook);
 
             // This will pop the current page off the navigation stack
