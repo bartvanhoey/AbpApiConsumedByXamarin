@@ -32,7 +32,7 @@ namespace XamarinBookStoreApp.Services.Books
             _httpClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
             _httpClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken ?? "");
 
-            var response = await _httpClient.Value.GetAsync("https://192.168.1.106:44323/api/app/book");
+            var response = await _httpClient.Value.GetAsync(GlobalSettings.Instance.GetBooksUri);
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -73,13 +73,13 @@ namespace XamarinBookStoreApp.Services.Books
 
             var data = JsonConvert.SerializeObject(input);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            var response = await _httpClient.Value.PostAsync("https://192.168.1.106:44323/api/app/book", content);
+            var response = await _httpClient.Value.PostAsync(GlobalSettings.Instance.PostBookUri, content);
             var result = await response.Content.ReadAsStringAsync();
-            var bookDto =  JsonConvert.DeserializeObject<BookDto>(result);
+            var bookDto = JsonConvert.DeserializeObject<BookDto>(result);
             return bookDto;
-            }
+        }
 
-            public Task UpdateAsync(Guid id, UpdateBookDto input)
+        public Task UpdateAsync(Guid id, UpdateBookDto input)
         {
             throw new NotImplementedException();
         }
