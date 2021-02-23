@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using XamarinBookStoreApp.Models;
@@ -16,7 +17,7 @@ namespace XamarinBookStoreApp.Services.Books
     {
         public IBooksDataStore<BookDto> BooksDataStore => DependencyService.Get<IBooksDataStore<BookDto>>();
         public IIdentityServerService IdentityService => DependencyService.Get<IIdentityServerService>();
-        Lazy<HttpClient> _apiClient;
+        Lazy<HttpClient> _httpClient;
 
         private async Task<string> GetAccessTokenAsync() => await IdentityService.GetAccessTokenAsync();
 
@@ -28,10 +29,10 @@ namespace XamarinBookStoreApp.Services.Books
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
             };
 
-            _apiClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
-            _apiClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken ?? "");
+            _httpClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
+            _httpClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken ?? "");
 
-            var response = await _apiClient.Value.GetAsync("https://192.168.1.106:44323/api/app/book");
+            var response = await _httpClient.Value.GetAsync("https://192.168.1.106:44323/api/app/book");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -54,12 +55,31 @@ namespace XamarinBookStoreApp.Services.Books
             throw new NotImplementedException();
         }
 
-        public Task<BookDto> CreateAsync(CreateBookDto input)
+        public async Task<BookDto> CreateAsync(CreateBookDto input)
         {
-            throw new NotImplementedException();
-        }
+            var accessToken = await GetAccessTokenAsync();
 
-        public Task UpdateAsync(Guid id, UpdateBookDto input)
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // EXCEPTION : Javax.Net.Ssl.SSLHandshakeException: 'java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.'
+            // SOLUTION :
+            var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+            };
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+
+            _httpClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
+            _httpClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken ?? "");
+
+            var data = JsonConvert.SerializeObject(input);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            var response = await _httpClient.Value.PostAsync("https://192.168.1.106:44323/api/app/book", content);
+            var result = await response.Content.ReadAsStringAsync();
+            var bookDto =  JsonConvert.DeserializeObject<BookDto>(result);
+            return bookDto;
+            }
+
+            public Task UpdateAsync(Guid id, UpdateBookDto input)
         {
             throw new NotImplementedException();
         }
