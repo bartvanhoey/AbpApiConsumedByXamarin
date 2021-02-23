@@ -12,7 +12,7 @@ namespace XamarinBookStoreApp.ViewModels
 {
     public class BooksViewModel : BaseViewModel
     {
-        public IBooksDataStore<BookDto> BooksDataStore => DependencyService.Get<IBooksDataStore<BookDto>>();
+        
         public IBooksService BooksService => DependencyService.Get<IBooksService>();
         
         private BookDto _selectedBook;
@@ -80,7 +80,7 @@ namespace XamarinBookStoreApp.ViewModels
                 return;
 
             // This will push the BookDetailPage onto the navigation stack
-            //await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}?{nameof(BookDetailViewModel.BookId)}={Book.Id}");
+            await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}?{nameof(BookDetailViewModel.BookId)}={Book.Id}");
         }
     }
 }

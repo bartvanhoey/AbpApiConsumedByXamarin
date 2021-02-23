@@ -6,7 +6,6 @@
         public static GlobalSettings Instance { get; } = new GlobalSettings();
         public string PostBookUri => _apiEndpoint + "book";
         public string GetBooksUri => _apiEndpoint + "book";
-
-
+        public string DeleteBookUri => _apiEndpoint + "book";
     }
 }

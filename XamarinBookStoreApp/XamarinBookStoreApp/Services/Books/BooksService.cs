@@ -48,9 +48,9 @@ namespace XamarinBookStoreApp.Services.Books
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await HttpClient.DeleteAsync(GlobalSettings.Instance.DeleteBookUri, id.ToString());
         }
     }
 }

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="XamarinBookStoreApp.Views.BookDetailPage">
+    <ContentPage.Content>
+        <StackLayout Spacing="20" Padding="15">
+            <Label Text="Name:" FontSize="Medium" />
+            <Label Text="{Binding Name}" FontSize="Small"/>
+            <Label Text="Publish date:" FontSize="Medium" />
+            <Label Text="{Binding PublishDate, StringFormat='{0:MMMM dd, yyyy}'}" FontSize="Small"/>
+            <Label Text="Type:" FontSize="Medium" />
+            <Label Text="{Binding Type}" FontSize="Small"/>
+            <Label Text="Price:" FontSize="Medium" />
+            <Label Text="{Binding Price}" FontSize="Small"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
