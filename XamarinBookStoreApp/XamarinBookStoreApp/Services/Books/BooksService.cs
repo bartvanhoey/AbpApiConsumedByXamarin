@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using XamarinBookStoreApp.Models;
 using XamarinBookStoreApp.Services.Books.Dtos;
+using XamarinBookStoreApp.Services.Http;
 using XamarinBookStoreApp.Services.IdentityServer;
 
 
@@ -16,35 +17,17 @@ namespace XamarinBookStoreApp.Services.Books
     public class BooksService : IBooksService
     {
         public IBooksDataStore<BookDto> BooksDataStore => DependencyService.Get<IBooksDataStore<BookDto>>();
-        public IIdentityServerService IdentityService => DependencyService.Get<IIdentityServerService>();
-        Lazy<HttpClient> _httpClient;
-
-        private async Task<string> GetAccessTokenAsync() => await IdentityService.GetAccessTokenAsync();
+        public IHttpClientService<BookDto, CreateBookDto> HttpClient => DependencyService.Get<IHttpClientService<BookDto, CreateBookDto>>();
 
         public async Task<IEnumerable<BookDto>> GetListAsync()
         {
-            var accessToken = await GetAccessTokenAsync();
-            var httpClientHandler = new HttpClientHandler
+            var books = await HttpClient.GetAsync(GlobalSettings.Instance.GetBooksUri);
+            if (books.TotalCount > 0)
             {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
-            };
-
-            _httpClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
-            _httpClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken ?? "");
-
-            var response = await _httpClient.Value.GetAsync(GlobalSettings.Instance.GetBooksUri);
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var booksResult = JsonConvert.DeserializeObject<BooksResult>(content);
-
-                if (booksResult.TotalCount > 0)
+                await BooksDataStore.DeleteAllBookAsync();
+                foreach (var bookDto in books.Items)
                 {
-                    await BooksDataStore.DeleteAllBookAsync();
-                    foreach (var bookDto in booksResult.Items)
-                    {
-                        await BooksDataStore.AddBookAsync(bookDto);
-                    }
+                    await BooksDataStore.AddBookAsync(bookDto);
                 }
             }
             return await BooksDataStore.GetBooksAsync(true);
@@ -57,26 +40,7 @@ namespace XamarinBookStoreApp.Services.Books
 
         public async Task<BookDto> CreateAsync(CreateBookDto input)
         {
-            var accessToken = await GetAccessTokenAsync();
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // EXCEPTION : Javax.Net.Ssl.SSLHandshakeException: 'java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.'
-            // SOLUTION :
-            var httpClientHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
-            };
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-
-            _httpClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
-            _httpClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken ?? "");
-
-            var data = JsonConvert.SerializeObject(input);
-            var content = new StringContent(data, Encoding.UTF8, "application/json");
-            var response = await _httpClient.Value.PostAsync(GlobalSettings.Instance.PostBookUri, content);
-            var result = await response.Content.ReadAsStringAsync();
-            var bookDto = JsonConvert.DeserializeObject<BookDto>(result);
-            return bookDto;
+            return await HttpClient.CreateAsync(GlobalSettings.Instance.PostBookUri, input);
         }
 
         public Task UpdateAsync(Guid id, UpdateBookDto input)

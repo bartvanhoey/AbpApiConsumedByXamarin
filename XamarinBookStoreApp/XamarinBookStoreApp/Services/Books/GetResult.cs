@@ -3,9 +3,9 @@ using XamarinBookStoreApp.Services.Books.Dtos;
 
 namespace XamarinBookStoreApp.Services.Books
 {
-    public class BooksResult
+    public class GetResult<T> where T : class 
     {
         public int TotalCount { get; set; }
-        public List<BookDto> Items { get; set; }
+        public List<T> Items { get; set; }
     }
 }
