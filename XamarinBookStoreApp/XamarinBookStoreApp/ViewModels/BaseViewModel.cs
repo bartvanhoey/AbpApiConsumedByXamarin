@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
 using Xamarin.Forms;
-
-using XamarinBookStoreApp.Models;
-using XamarinBookStoreApp.Services;
 using XamarinBookStoreApp.Services.Books;
 using XamarinBookStoreApp.Services.Books.Dtos;
 
@@ -14,12 +10,8 @@ namespace XamarinBookStoreApp.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
         public IBooksDataStore<BookDto> BooksDataStore => DependencyService.Get<IBooksDataStore<BookDto>>();
         public IBooksService BooksService => DependencyService.Get<IBooksService>();
-
-
-
 
         bool isBusy = false;
         public bool IsBusy

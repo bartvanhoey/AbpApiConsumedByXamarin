@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using XamarinBookStoreApp.Models.Books;
+using XamarinBookStoreApp.DomainShared.Books;
 
 namespace XamarinBookStoreApp.ViewModels
 {
@@ -17,12 +15,13 @@ namespace XamarinBookStoreApp.ViewModels
         private BookType type;
         private float price;
         public Command DeleteCommand { get; }
+        public Command CancelCommand { get; }
 
         public BookDetailViewModel()
         {
             DeleteCommand = new Command(async () => await OnDelete());
+            CancelCommand = new Command(OnCancel);
         }
-
 
         public float Price
         {
@@ -76,6 +75,12 @@ namespace XamarinBookStoreApp.ViewModels
         private async Task OnDelete()
         {
             await BooksService.DeleteAsync(Guid.Parse(bookId));
+            await Shell.Current.GoToAsync("..");
+        }
+
+        private async void OnCancel()
+        {
+            // This will pop the current page off the navigation stack
             await Shell.Current.GoToAsync("..");
         }
 

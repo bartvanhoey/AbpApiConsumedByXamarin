@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using XamarinBookStoreApp.Models;
-using XamarinBookStoreApp.Services.Books;
 using XamarinBookStoreApp.Services.Books.Dtos;
 using XamarinBookStoreApp.Views;
 
@@ -12,9 +10,7 @@ namespace XamarinBookStoreApp.ViewModels
 {
     public class BooksViewModel : BaseViewModel
     {
-        
-        public IBooksService BooksService => DependencyService.Get<IBooksService>();
-        
+
         private BookDto _selectedBook;
         public ObservableCollection<BookDto> Books { get; }
         public Command LoadBooksCommand { get; }
@@ -35,12 +31,9 @@ namespace XamarinBookStoreApp.ViewModels
             IsBusy = true;
             try
             {
-                Books.Clear();
                 var books = await BooksService.GetListAsync();
-                foreach (var book in books)
-                {
-                    Books.Add(book);
-                }
+                Books.Clear();
+                foreach (var book in books) Books.Add(book);
             }
             catch (Exception ex)
             {

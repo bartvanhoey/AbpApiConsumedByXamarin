@@ -1,5 +1,5 @@
 ﻿using System;
-using XamarinBookStoreApp.Models.Books;
+using XamarinBookStoreApp.DomainShared.Books;
 
 namespace XamarinBookStoreApp.Services.Books.Dtos
 {

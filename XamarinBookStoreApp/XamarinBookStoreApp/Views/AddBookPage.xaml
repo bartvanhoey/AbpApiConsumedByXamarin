@@ -6,7 +6,7 @@
              Shell.PresentationMode="ModalAnimated"
              Title="New Book"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core" 
-             xmlns:enums="clr-namespace:XamarinBookStoreApp.Models.Books"
+             xmlns:enums="clr-namespace:XamarinBookStoreApp.DomainShared.Books"
              ios:Page.UseSafeArea="true">
     <ContentPage.Content>
         <StackLayout Spacing="3" Padding="15">

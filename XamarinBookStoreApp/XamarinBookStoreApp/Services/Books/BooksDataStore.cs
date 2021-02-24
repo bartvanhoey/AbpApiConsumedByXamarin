@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using XamarinBookStoreApp.Models;
 using XamarinBookStoreApp.Services.Books;
 using XamarinBookStoreApp.Services.Books.Dtos;
 
@@ -14,21 +13,12 @@ namespace XamarinBookStoreApp.Services
 
         public BooksDataStore()
         {
-            books = new List<BookDto>()
-            {
-                //new Book { Id = Guid.NewGuid().ToString(), Text = "First book", Description="This is an book description." },
-                //new Book { Id = Guid.NewGuid().ToString(), Text = "Second book", Description="This is an book description." },
-                //new Book { Id = Guid.NewGuid().ToString(), Text = "Third book", Description="This is an book description." },
-                //new Book { Id = Guid.NewGuid().ToString(), Text = "Fourth book", Description="This is an book description." },
-                //new Book { Id = Guid.NewGuid().ToString(), Text = "Fifth book", Description="This is an book description." },
-                //new Book { Id = Guid.NewGuid().ToString(), Text = "Sixth book", Description="This is an book description." }
-            };
+            books = new List<BookDto>();
         }
 
-        public async Task<bool> AddBookAsync(BookDto book)
+        public async Task<bool> CreateBookAsync(BookDto book)
         {
             books.Add(book);
-
             return await Task.FromResult(true);
         }
 
@@ -45,7 +35,6 @@ namespace XamarinBookStoreApp.Services
         {
             var oldBook = books.Where((BookDto arg) => arg.Id == id).FirstOrDefault();
             books.Remove(oldBook);
-
             return await Task.FromResult(true);
         }
 
@@ -59,7 +48,7 @@ namespace XamarinBookStoreApp.Services
             return await Task.FromResult(books);
         }
 
-        public async Task<bool> DeleteAllBookAsync()
+        public async Task<bool> DeleteAllBooksAsync()
         {
             books.Clear();
             return await Task.FromResult(true);

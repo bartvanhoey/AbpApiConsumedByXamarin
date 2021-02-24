@@ -1,7 +1,6 @@
 ﻿
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using XamarinBookStoreApp.Models;
 using XamarinBookStoreApp.Services.Books.Dtos;
 using XamarinBookStoreApp.ViewModels;
 

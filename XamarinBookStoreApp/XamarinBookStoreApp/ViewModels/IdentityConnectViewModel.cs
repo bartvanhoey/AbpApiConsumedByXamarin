@@ -1,15 +1,5 @@
-﻿using IdentityModel.OidcClient;
-using IdentityModel.OidcClient.Browser;
-using Newtonsoft.Json;
-using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Essentials;
+﻿using System.Threading.Tasks;
 using Xamarin.Forms;
-using XamarinBookStoreApp.Models;
-using XamarinBookStoreApp.Services.Books;
 using XamarinBookStoreApp.Services.IdentityServer;
 
 namespace XamarinBookStoreApp.ViewModels
@@ -17,7 +7,7 @@ namespace XamarinBookStoreApp.ViewModels
     public partial class IdentityConnectViewModel : BaseViewModel
     {
         IIdentityServerService IdentityService => DependencyService.Get<IIdentityServerService>();
-      
+
         public Command LoginIdentityServerCommand { get; }
         public Command LogoutIdentityServerCommand { get; }
 
@@ -30,7 +20,9 @@ namespace XamarinBookStoreApp.ViewModels
 
         private async Task LogoutToIdentityServerAsync()
         {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                               await IdentityService.LogoutAsync();
+            await IdentityService.LogoutAsync();
+            await Shell.Current.GoToAsync("//IdentityConnectPage");
+
         }
 
         private async Task LoginIdentityServerAsync()

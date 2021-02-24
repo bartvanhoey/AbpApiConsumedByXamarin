@@ -1,10 +1,8 @@
 ﻿using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -42,6 +40,7 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             {
                 try
                 {
+                    await SecureStorage.SetAsync("identity_token", loginResult.IdentityToken);
                     foreach (var claim in loginResult.User.Claims)
                         await SecureStorage.SetAsync(claim.Type, claim.Value);
 
@@ -75,14 +74,28 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             return await SecureStorage.GetAsync("access_token");
         }
 
-        public async Task LogoutAsync()
+        public async Task<bool> LogoutAsync()
         {
             SetOidcClient();
-            var isAccessTokenRemoved = SecureStorage.Remove("access_token");
-            var isRefreshTokenRemoved = SecureStorage.Remove("refresh_token");
-
-            var logoutResult = await OidcClient.LogoutAsync();
-
+            SecureStorage.Remove("access_token");
+            SecureStorage.Remove("refresh_token");
+            LogoutResult logoutResult = null;
+            var idTokenHint = await SecureStorage.GetAsync("identity_token");
+            SecureStorage.Remove("identity_token");
+            try
+            {
+                // TODO How to solve LogoutAsync not returning logoutResult
+                logoutResult = await OidcClient.LogoutAsync(new LogoutRequest()
+                {
+                    BrowserDisplayMode = DisplayMode.Hidden,
+                    IdTokenHint = idTokenHint,
+                });
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return !logoutResult.IsError;
         }
     }
 }

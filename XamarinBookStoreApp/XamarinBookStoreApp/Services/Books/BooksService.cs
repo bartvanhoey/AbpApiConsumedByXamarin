@@ -1,15 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using XamarinBookStoreApp.Models;
 using XamarinBookStoreApp.Services.Books.Dtos;
 using XamarinBookStoreApp.Services.Http;
-using XamarinBookStoreApp.Services.IdentityServer;
 
 
 namespace XamarinBookStoreApp.Services.Books
@@ -24,10 +18,10 @@ namespace XamarinBookStoreApp.Services.Books
             var books = await HttpClient.GetAsync(GlobalSettings.Instance.GetBooksUri);
             if (books.TotalCount > 0)
             {
-                await BooksDataStore.DeleteAllBookAsync();
+                await BooksDataStore.DeleteAllBooksAsync();
                 foreach (var bookDto in books.Items)
                 {
-                    await BooksDataStore.AddBookAsync(bookDto);
+                    await BooksDataStore.CreateBookAsync(bookDto);
                 }
             }
             return await BooksDataStore.GetBooksAsync(true);
@@ -40,7 +34,9 @@ namespace XamarinBookStoreApp.Services.Books
 
         public async Task<BookDto> CreateAsync(CreateBookDto input)
         {
-            return await HttpClient.CreateAsync(GlobalSettings.Instance.PostBookUri, input);
+            var bookDto = await HttpClient.CreateAsync(GlobalSettings.Instance.PostBookUri, input);
+            await BooksDataStore.CreateBookAsync(bookDto);
+            return bookDto;
         }
 
         public Task UpdateAsync(Guid id, UpdateBookDto input)

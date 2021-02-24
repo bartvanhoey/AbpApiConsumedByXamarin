@@ -1,8 +1,4 @@
-﻿using IdentityModel.OidcClient;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace XamarinBookStoreApp.Services.IdentityServer
 {
@@ -10,6 +6,6 @@ namespace XamarinBookStoreApp.Services.IdentityServer
     {
         Task<string> GetAccessTokenAsync();
         Task<bool> LoginAysnc();
-        Task LogoutAsync();
+        Task<bool> LogoutAsync();
     }
 }
