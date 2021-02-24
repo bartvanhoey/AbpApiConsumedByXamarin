@@ -36,6 +36,7 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             SetOidcClient();
             var loginResult = await OidcClient.LoginAsync(new LoginRequest());
 
+
             if (!loginResult.IsError)
             {
                 try
@@ -89,6 +90,7 @@ namespace XamarinBookStoreApp.Services.IdentityServer
                 {
                     BrowserDisplayMode = DisplayMode.Hidden,
                     IdTokenHint = idTokenHint,
+                    BrowserTimeout = 1000
                 });
             }
             catch (Exception ex)

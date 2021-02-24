@@ -9,8 +9,7 @@ namespace XamarinBookStoreApp.Droid
     [Activity(Label = "OidcCallbackActivity")]
     [IntentFilter(new[] { Intent.ActionView },
             Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-            DataScheme = "xamarinformsclients")]
-    //DataHost = "callback")]
+            DataScheme = "xamarinformsclients", DataHost = "callback")]
     public class OidcCallbackActivity : Activity
     {
         public static event Action<string> Callbacks;
