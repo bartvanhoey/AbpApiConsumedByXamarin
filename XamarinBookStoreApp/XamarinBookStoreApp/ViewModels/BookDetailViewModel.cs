@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using XamarinBookStoreApp.Models.Books;
 
 namespace XamarinBookStoreApp.ViewModels
 {
     [QueryProperty(nameof(BookId), nameof(BookId))]
-
     public class BookDetailViewModel : BaseViewModel
     {
         private string bookId;
@@ -16,6 +16,13 @@ namespace XamarinBookStoreApp.ViewModels
         private DateTime publishDate;
         private BookType type;
         private float price;
+        public Command DeleteCommand { get; }
+
+        public BookDetailViewModel()
+        {
+            DeleteCommand = new Command(async () => await OnDelete());
+        }
+
 
         public float Price
         {
@@ -64,7 +71,16 @@ namespace XamarinBookStoreApp.ViewModels
             {
                 Debug.WriteLine("Failed to Load Item");
             }
-
         }
+
+        private async Task OnDelete()
+        {
+            await BooksService.DeleteAsync(Guid.Parse(bookId));
+            await Shell.Current.GoToAsync("..");
+        }
+
     }
+
+
+
 }

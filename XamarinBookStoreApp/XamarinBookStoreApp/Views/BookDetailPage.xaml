@@ -12,6 +12,10 @@
             <Label Text="{Binding Type}" FontSize="Small"/>
             <Label Text="Price:" FontSize="Medium" />
             <Label Text="{Binding Price}" FontSize="Small"/>
+            <StackLayout Orientation="Horizontal" >
+                <Button Text="Delete Book" Command="{Binding DeleteCommand}" HorizontalOptions="FillAndExpand"></Button>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
+  
 </ContentPage>

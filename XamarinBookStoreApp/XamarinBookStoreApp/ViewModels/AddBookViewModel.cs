@@ -11,8 +11,8 @@ namespace XamarinBookStoreApp.ViewModels
 {
     public class AddBookViewModel : BaseViewModel
     {
-        public IBooksDataStore<BookDto> BooksDataStore => DependencyService.Get<IBooksDataStore<BookDto>>();
-        public IBooksService BooksService => DependencyService.Get<IBooksService>();
+        //public IBooksDataStore<BookDto> BooksDataStore => DependencyService.Get<IBooksDataStore<BookDto>>();
+        //public IBooksService BooksService => DependencyService.Get<IBooksService>();
 
 
         private string _name;
