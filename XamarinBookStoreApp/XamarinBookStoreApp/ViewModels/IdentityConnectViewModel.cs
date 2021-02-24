@@ -27,7 +27,7 @@ namespace XamarinBookStoreApp.ViewModels
 
         private async Task LoginIdentityServerAsync()
         {
-            var loginResult = await IdentityService.LoginAysnc();
+            var loginResult = await IdentityService.LoginAsync();
             if (!loginResult) return;
 
             await Shell.Current.GoToAsync("//BooksPage");

@@ -31,7 +31,7 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             OidcClient = new OidcClient(options);
         }
 
-        public async Task<bool> LoginAysnc()
+        public async Task<bool> LoginAsync()
         {
             SetOidcClient();
             var loginResult = await OidcClient.LoginAsync(new LoginRequest());
@@ -67,11 +67,11 @@ namespace XamarinBookStoreApp.Services.IdentityServer
                 var validTo = jwtToken.ValidTo;
                 if (validTo <= DateTime.Now.AddMinutes(1))
                 {
-                    await LoginAysnc();
+                    await LoginAsync();
                 }
                 else return accessToken;
             }
-            else await LoginAysnc();
+            else await LoginAsync();
             return await SecureStorage.GetAsync("access_token");
         }
 
