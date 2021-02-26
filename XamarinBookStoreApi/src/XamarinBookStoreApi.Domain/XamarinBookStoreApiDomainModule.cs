@@ -39,22 +39,17 @@ namespace XamarinBookStoreApi
         options.IsEnabled = MultiTenancyConsts.IsEnabled;
       });
 
-
-      //   context.Services.AddTransient<IProfileService, ProfileService>();
-
 #if DEBUG
       context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
     }
 
-
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-
       PreConfigure<IIdentityServerBuilder>(builder =>
-        {
-          builder.AddProfileService<ProfileService>();
-        });
+      {
+        builder.AddProfileService<ProfileService>();
+      });
     }
 
 

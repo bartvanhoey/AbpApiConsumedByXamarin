@@ -3,11 +3,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using Microsoft.AspNetCore.Identity;
 using Volo.Abp.Identity;
 using Volo.Abp.PermissionManagement;
 using XamarinBookStoreApi.Permissions;
-using XamarinBookStoreApi.Users;
 
 namespace XamarinBookStoreApi
 {
@@ -22,11 +20,8 @@ namespace XamarinBookStoreApi
       _permissionGrantRepository = permissionGrantRepository;
     }
 
-
     public async Task GetProfileDataAsync(ProfileDataRequestContext context)
     {
-
-      //>Processing
       var user = await _userManager.GetUserAsync(context.Subject);
       var permissionsCurrentUser = (await _permissionGrantRepository.GetListAsync()).Where(x => x.ProviderKey == user.Id.ToString() || x.ProviderKey == user.Name);
 
@@ -44,23 +39,12 @@ namespace XamarinBookStoreApi
     };
 
       context.IssuedClaims.AddRange(claims);
-
     }
 
     public async Task IsActiveAsync(IsActiveContext context)
     {
-        //>Processing
-        var user = await _userManager.GetUserAsync(context.Subject);
-        
-        context.IsActive = (user != null);
+      var user = await _userManager.GetUserAsync(context.Subject);
+      context.IsActive = (user != null);
     }
   }
 }
-
-
-//   // Add a reference to the Application.Contracts project
-
-//   context.User.AddIdentity(new ClaimsIdentity));
-
-//    await _requestDelegate(context);
-// }
