@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\XamarinBookStoreApi.Domain.Shared\XamarinBookStoreApi.Domain.Shared.csproj" />
+    <ProjectReference Include="..\XamarinBookStoreApi.Application.Contracts\XamarinBookStoreApi.Application.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

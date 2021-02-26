@@ -13,34 +13,50 @@ using Volo.Abp.PermissionManagement.Identity;
 using Volo.Abp.PermissionManagement.IdentityServer;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
+using IdentityServer4.Services;
 
 namespace XamarinBookStoreApi
 {
-    [DependsOn(
-        typeof(XamarinBookStoreApiDomainSharedModule),
-        typeof(AbpAuditLoggingDomainModule),
-        typeof(AbpBackgroundJobsDomainModule),
-        typeof(AbpFeatureManagementDomainModule),
-        typeof(AbpIdentityDomainModule),
-        typeof(AbpPermissionManagementDomainIdentityModule),
-        typeof(AbpIdentityServerDomainModule),
-        typeof(AbpPermissionManagementDomainIdentityServerModule),
-        typeof(AbpSettingManagementDomainModule),
-        typeof(AbpTenantManagementDomainModule),
-        typeof(AbpEmailingModule)
-    )]
-    public class XamarinBookStoreApiDomainModule : AbpModule
+  [DependsOn(
+      typeof(XamarinBookStoreApiDomainSharedModule),
+      typeof(AbpAuditLoggingDomainModule),
+      typeof(AbpBackgroundJobsDomainModule),
+      typeof(AbpFeatureManagementDomainModule),
+      typeof(AbpIdentityDomainModule),
+      typeof(AbpPermissionManagementDomainIdentityModule),
+      typeof(AbpIdentityServerDomainModule),
+      typeof(AbpPermissionManagementDomainIdentityServerModule),
+      typeof(AbpSettingManagementDomainModule),
+      typeof(AbpTenantManagementDomainModule),
+      typeof(AbpEmailingModule)
+  )]
+  public class XamarinBookStoreApiDomainModule : AbpModule
+  {
+    public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        public override void ConfigureServices(ServiceConfigurationContext context)
-        {
-            Configure<AbpMultiTenancyOptions>(options =>
-            {
-                options.IsEnabled = MultiTenancyConsts.IsEnabled;
-            });
+      Configure<AbpMultiTenancyOptions>(options =>
+      {
+        options.IsEnabled = MultiTenancyConsts.IsEnabled;
+      });
+
+
+      //   context.Services.AddTransient<IProfileService, ProfileService>();
 
 #if DEBUG
-            context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
+      context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
-        }
     }
+
+
+    public override void PreConfigureServices(ServiceConfigurationContext context)
+    {
+
+      PreConfigure<IIdentityServerBuilder>(builder =>
+        {
+          builder.AddProfileService<ProfileService>();
+        });
+    }
+
+
+  }
 }
