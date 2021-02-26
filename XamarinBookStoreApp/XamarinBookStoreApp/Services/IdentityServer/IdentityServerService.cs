@@ -1,8 +1,12 @@
 ﻿using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -37,8 +41,35 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             var loginResult = await OidcClient.LoginAsync(new LoginRequest());
 
 
+
             if (!loginResult.IsError)
             {
+
+                var claims = new List<string> { "BookStore.Books", "BookStore.Books.Create", "BookStore.Books.Edit", "BookStore.Books.Delete" };
+
+                var accessToken = loginResult.AccessToken;
+                var base64payload = accessToken.Split('.')[1];
+                base64payload = base64payload.PadRight(base64payload.Length + (base64payload.Length * 3) % 4, '=');  // add padding
+                var bytes = Convert.FromBase64String(base64payload);
+                var jsonPayload = Encoding.UTF8.GetString(bytes);
+                var claimsFromAccessToken = JObject.Parse(jsonPayload);
+
+                foreach (var claim in claims)
+                {
+                    var hasKey = claimsFromAccessToken.ContainsKey(claim);
+                    var canClaim = hasKey == false ? false : claimsFromAccessToken[claim].Value<bool>();
+                    await SecureStorage.SetAsync(claim, canClaim.ToString());
+                }
+
+                //var hasCreateBooksKey = claimsFromAccessToken.ContainsKey("BookStore.Books.Create");
+                //var canCreateBooks = hasCreateBooksKey == false ? false : claimsFromAccessToken["BookStore.Books.Create"].Value<bool>();
+
+                //var hasEditBooksKey = claimsFromAccessToken.ContainsKey("BookStore.Books.Edit");
+                //var canEditBooks = hasEditBooksKey == false ? false : claimsFromAccessToken["BookStore.Books.Edit"].Value<bool>();
+
+                //var hasDeleteBooksKey = claimsFromAccessToken.ContainsKey("BookStore.Books.Delete");
+                //var canDeleteBooks = hasDeleteBooksKey == false ? false : claimsFromAccessToken["BookStore.Books.Delete"].Value<bool>();
+
                 try
                 {
                     await SecureStorage.SetAsync("identity_token", loginResult.IdentityToken);
