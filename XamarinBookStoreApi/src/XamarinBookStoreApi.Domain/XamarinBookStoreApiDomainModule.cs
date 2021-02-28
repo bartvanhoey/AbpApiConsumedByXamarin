@@ -14,6 +14,7 @@ using Volo.Abp.PermissionManagement.IdentityServer;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 using IdentityServer4.Services;
+using IdentityServer4.Validation;
 
 namespace XamarinBookStoreApi
 {
@@ -48,7 +49,8 @@ namespace XamarinBookStoreApi
     {
       PreConfigure<IIdentityServerBuilder>(builder =>
       {
-        builder.AddProfileService<ProfileService>();
+       // builder.AddProfileService<ProfileService>();
+        context.Services.AddScoped<ICustomTokenRequestValidator, XamarinClientCustomClaimsAdder>();
       });
     }
 

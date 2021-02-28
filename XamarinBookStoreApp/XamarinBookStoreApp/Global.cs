@@ -28,7 +28,7 @@ namespace XamarinBookStoreApp
     }
 
     public class CustomClaims { 
-        public readonly IEnumerable<string> Get = new List<string> { "BookStore.Books", "BookStore.Books.Create", "BookStore.Books.Edit", "BookStore.Books.Delete" };
+        public readonly IEnumerable<string> Get = new List<string> { "client_BookStore.Books", "client_BookStore.Books.Create", "client_BookStore.Books.Edit", "client_BookStore.Books.Delete" };
     }
 
     public class Api {
