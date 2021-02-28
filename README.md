@@ -38,7 +38,7 @@ Open a command prompt and enter `ipconfig` to fin you IP address.
 Hit CTRL+SHIFT+H to replace all localhost instances in the XamarinBookStoreApi project with your IP address. You need to replace them because the Xamarin.Forms app mixes up localhost from the API with localhost from the Xamarin.Forms app.
 
 ```bash
-    https://192.168.1.106:44349" => "https://192.168.1.106:44349"
+    https://192.168.1.104:44349" => "https://192.168.1.104:44349"
 ```
 
 ![IP-address](Images/IP_address.jpg)
@@ -50,7 +50,7 @@ Hit CTRL+SHIFT+H to replace all localhost instances in the XamarinBookStoreApi p
         "ClientId": "XamarinBookStoreApi_Xamarin",
         "ClientSecret": "1q2w3e*",
         "RootUrl": "https://<your-ip-address>:<port-identityserver>" 
-        // RootUrl = "AuthServer:Authority": "https://192.168.1.106:44349" in appsettings.json HttpApi.Host project
+        // RootUrl = "AuthServer:Authority": "https://192.168.1.104:44349" in appsettings.json HttpApi.Host project
       }
 ```
 

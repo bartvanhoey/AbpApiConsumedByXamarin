@@ -9,7 +9,7 @@
           "type": "blazorwasm",
           "request": "launch",
           "cwd": "${workspaceFolder}/XamarinBookStoreApi/src/XamarinBookStoreApi.Blazor",
-          "url": "https://192.168.1.106:44307"
+          "url": "https://192.168.1.104:44307"
       },
       {
           "name": "ApiDevelopment",

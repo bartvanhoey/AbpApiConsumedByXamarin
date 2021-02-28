@@ -3,7 +3,7 @@
     "windowsAuthentication": false, 
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://192.168.1.106:44323",
+      "applicationUrl": "https://192.168.1.104:44323",
       "sslPort": 44323
     }
   },
@@ -18,7 +18,7 @@
     "XamarinBookStoreApi.HttpApi.Host": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://192.168.1.106:44323",
+      "applicationUrl": "https://192.168.1.104:44323",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

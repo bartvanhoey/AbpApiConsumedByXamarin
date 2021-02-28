@@ -1,9 +1,7 @@
 ﻿using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Text;
@@ -15,6 +13,9 @@ namespace XamarinBookStoreApp.Services.IdentityServer
 {
     public class IdentityServerService : IIdentityServerService
     {
+        private const string AccessToken = "access_token";
+        private const string IdentityToken = "identity_token";
+
         public OidcClient OidcClient { get; private set; }
 
         private void SetOidcClient()
@@ -22,11 +23,11 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             var browser = DependencyService.Get<IBrowser>();
             var options = new OidcClientOptions
             {
-                Authority = "https://192.168.1.106:44368",
-                ClientId = "XamarinBookStoreApi_Xamarin",
-                Scope = "email openid profile role phone address XamarinBookStoreApi",
-                ClientSecret = "1q2w3e*",
-                RedirectUri = "xamarinformsclients://callback",
+                Authority = Global.Settings.IdentityServer.Authority,
+                ClientId = Global.Settings.IdentityServer.ClientId,
+                Scope = Global.Settings.IdentityServer.Scope,
+                ClientSecret = Global.Settings.IdentityServer.ClientSecret,
+                RedirectUri = Global.Settings.IdentityServer.RedirectUri,
                 Browser = browser,
                 ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
             };
@@ -39,81 +40,72 @@ namespace XamarinBookStoreApp.Services.IdentityServer
         {
             SetOidcClient();
             var loginResult = await OidcClient.LoginAsync(new LoginRequest());
+            if (loginResult.IsError) return false;
+            return await WriteTokensAndClaimsToSecureStorageAsync(loginResult);
+        }
 
-
-
-            if (!loginResult.IsError)
+        private async Task<bool> WriteTokensAndClaimsToSecureStorageAsync(LoginResult loginResult)
+        {
+            try
             {
-
-                var claims = new List<string> { "BookStore.Books", "BookStore.Books.Create", "BookStore.Books.Edit", "BookStore.Books.Delete" };
-
-                var accessToken = loginResult.AccessToken;
-                var base64payload = accessToken.Split('.')[1];
-                base64payload = base64payload.PadRight(base64payload.Length + (base64payload.Length * 3) % 4, '=');  // add padding
-                var bytes = Convert.FromBase64String(base64payload);
-                var jsonPayload = Encoding.UTF8.GetString(bytes);
-                var claimsFromAccessToken = JObject.Parse(jsonPayload);
-
-                foreach (var claim in claims)
+                var customClaims = ExtractCustomClaims(loginResult.AccessToken);
+                var gloabalSettingsCustomClaims = Global.Settings.CustomClaims.Get;
+                foreach (var customClaim in gloabalSettingsCustomClaims)
                 {
-                    var hasKey = claimsFromAccessToken.ContainsKey(claim);
-                    var canClaim = hasKey == false ? false : claimsFromAccessToken[claim].Value<bool>();
-                    await SecureStorage.SetAsync(claim, canClaim.ToString());
+                    var hasKey = customClaims.ContainsKey(customClaim);
+                    var canClaim = hasKey == true && customClaims[customClaim].Value<bool>();
+                    await SecureStorage.SetAsync(customClaim, canClaim.ToString());
                 }
+                await SecureStorage.SetAsync(IdentityToken, loginResult.IdentityToken);
+                foreach (var claim in loginResult.User.Claims)
+                    await SecureStorage.SetAsync(claim.Type, claim.Value);
 
-                //var hasCreateBooksKey = claimsFromAccessToken.ContainsKey("BookStore.Books.Create");
-                //var canCreateBooks = hasCreateBooksKey == false ? false : claimsFromAccessToken["BookStore.Books.Create"].Value<bool>();
-
-                //var hasEditBooksKey = claimsFromAccessToken.ContainsKey("BookStore.Books.Edit");
-                //var canEditBooks = hasEditBooksKey == false ? false : claimsFromAccessToken["BookStore.Books.Edit"].Value<bool>();
-
-                //var hasDeleteBooksKey = claimsFromAccessToken.ContainsKey("BookStore.Books.Delete");
-                //var canDeleteBooks = hasDeleteBooksKey == false ? false : claimsFromAccessToken["BookStore.Books.Delete"].Value<bool>();
-
-                try
-                {
-                    await SecureStorage.SetAsync("identity_token", loginResult.IdentityToken);
-                    foreach (var claim in loginResult.User.Claims)
-                        await SecureStorage.SetAsync(claim.Type, claim.Value);
-
-                    await SecureStorage.SetAsync("access_token", loginResult.AccessToken);
-                    await SecureStorage.SetAsync("refresh_token", loginResult.RefreshToken);
-                }
-                catch (Exception ex)
-                {
-                    // Possible that device doesn't support secure storage on device.
-                }
+                await SecureStorage.SetAsync(AccessToken, loginResult.AccessToken);
             }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+                // Possible that device doesn't support secure storage on device.
+                throw new ArgumentException("device doesn't support secure storage on device");
+            }
+            return true;
+        }
 
-            return !loginResult.IsError;
+        public JObject ExtractCustomClaims(string accessToken)
+        {
+            var base64payload = accessToken.Split('.')[1];
+            base64payload = base64payload.PadRight(base64payload.Length + (base64payload.Length * 3) % 4, '=');  // add padding
+            var bytes = Convert.FromBase64String(base64payload);
+            var jsonPayload = Encoding.UTF8.GetString(bytes);
+            var claimsFromAccessToken = JObject.Parse(jsonPayload);
+            return claimsFromAccessToken;
         }
 
         public async Task<string> GetAccessTokenAsync()
         {
-            var accessToken = await SecureStorage.GetAsync("access_token");
+            var accessToken = await SecureStorage.GetAsync(AccessToken);
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadJwtToken(accessToken);
                 var validTo = jwtToken.ValidTo;
-                if (validTo <= DateTime.Now.AddMinutes(1))
+                if (validTo <= DateTime.Now.AddMinutes(5))
                 {
                     await LoginAsync();
                 }
                 else return accessToken;
             }
             else await LoginAsync();
-            return await SecureStorage.GetAsync("access_token");
+            return await SecureStorage.GetAsync(AccessToken);
         }
 
         public async Task<bool> LogoutAsync()
         {
             SetOidcClient();
-            SecureStorage.Remove("access_token");
-            SecureStorage.Remove("refresh_token");
-            LogoutResult logoutResult = null;
-            var idTokenHint = await SecureStorage.GetAsync("identity_token");
-            SecureStorage.Remove("identity_token");
+            SecureStorage.Remove(AccessToken);
+            var idTokenHint = await SecureStorage.GetAsync(IdentityToken);
+            SecureStorage.Remove(IdentityToken);
+            LogoutResult logoutResult;
             try
             {
                 // TODO How to solve LogoutAsync not returning logoutResult
@@ -126,7 +118,7 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             }
             catch (Exception ex)
             {
-                var msg = ex.Message;
+                throw new Exception(ex.Message);
             }
             return !logoutResult.IsError;
         }

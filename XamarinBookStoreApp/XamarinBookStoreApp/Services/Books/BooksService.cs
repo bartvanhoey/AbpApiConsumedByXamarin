@@ -15,7 +15,7 @@ namespace XamarinBookStoreApp.Services.Books
 
         public async Task<IEnumerable<BookDto>> GetListAsync()
         {
-            var books = await HttpClient.GetAsync(GlobalSettings.Instance.GetBooksUri);
+            var books = await HttpClient.GetAsync(Global.Settings.Api.GetBooksUri);
             if (books.TotalCount > 0)
             {
                 await BooksDataStore.DeleteAllBooksAsync();
@@ -34,7 +34,7 @@ namespace XamarinBookStoreApp.Services.Books
 
         public async Task<BookDto> CreateAsync(CreateBookDto input)
         {
-            var bookDto = await HttpClient.CreateAsync(GlobalSettings.Instance.PostBookUri, input);
+            var bookDto = await HttpClient.CreateAsync(Global.Settings.Api.PostBookUri, input);
             await BooksDataStore.CreateBookAsync(bookDto);
             return bookDto;
         }
@@ -46,7 +46,7 @@ namespace XamarinBookStoreApp.Services.Books
 
         public async Task DeleteAsync(Guid id)
         {
-            await HttpClient.DeleteAsync(GlobalSettings.Instance.DeleteBookUri, id.ToString());
+            await HttpClient.DeleteAsync(Global.Settings.Api.DeleteBookUri, id.ToString());
         }
     }
 }
