@@ -7,8 +7,8 @@
              xmlns:model="clr-namespace:XamarinBookStoreApp.Services.Books.Dtos"  
              x:Name="BrowseBooksPage">
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Command="{Binding AddBookCommand}" />
+    <ContentPage.ToolbarItems  >
+        <ToolbarItem x:Name="AddBookToolBarItem" Text="Add" Command="{Binding AddBookCommand}" />
     </ContentPage.ToolbarItems>
     <!--
       x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.

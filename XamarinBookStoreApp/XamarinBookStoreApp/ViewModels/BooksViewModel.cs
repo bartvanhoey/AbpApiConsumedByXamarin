@@ -24,6 +24,8 @@ namespace XamarinBookStoreApp.ViewModels
             LoadBooksCommand = new Command(async () => await ExecuteLoadBooksCommand());
             BookTapped = new Command<BookDto>(OnBookSelected);
             AddBookCommand = new Command(OnAddBook);
+
+            
         }
 
         async Task ExecuteLoadBooksCommand()

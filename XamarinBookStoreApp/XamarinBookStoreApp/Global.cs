@@ -6,7 +6,7 @@ namespace XamarinBookStoreApp
     {
         public IdentityServer IdentityServer { get; }
         public CustomClaims CustomClaims { get; }
-        public Api Api{ get; }
+        public Api Api { get; }
 
         public Global(IdentityServer identityServer, CustomClaims customClaims, Api api)
         {
@@ -15,7 +15,7 @@ namespace XamarinBookStoreApp
             Api = api;
         }
 
-        public static Global Settings { get; } = new Global( new IdentityServer(), new CustomClaims(), new Api());
+        public static Global Settings { get; } = new Global(new IdentityServer(), new CustomClaims(), new Api());
     }
 
     public class IdentityServer
@@ -27,14 +27,29 @@ namespace XamarinBookStoreApp
         public readonly string RedirectUri = "xamarinformsclients://callback";
     }
 
-    public class CustomClaims { 
-        public readonly IEnumerable<string> Get = new List<string> { "client_BookStore.Books", "client_BookStore.Books.Create", "client_BookStore.Books.Edit", "client_BookStore.Books.Delete" };
+    public class CustomClaims
+    {
+        public readonly IEnumerable<string> Get = new List<string> { Permissions.Books.Default, Permissions.Books.Create, Permissions.Books.Edit, Permissions.Books.Delete };
     }
 
-    public class Api {
+    public class Api
+    {
         private readonly string _apiEndpoint = "https://192.168.1.104:44323/api/app/";
         public string PostBookUri => _apiEndpoint + "book";
         public string GetBooksUri => _apiEndpoint + "book";
         public string DeleteBookUri => _apiEndpoint + "book";
+    }
+
+    public static class Permissions
+    {
+        public const string GroupName = "BookStore";
+
+        public class Books
+        {
+            public const string Default = GroupName + ".Books";
+            public const string Create = Default + ".Create";
+            public const string Edit = Default + ".Edit";
+            public const string Delete = Default + ".Delete";
+        }
     }
 }

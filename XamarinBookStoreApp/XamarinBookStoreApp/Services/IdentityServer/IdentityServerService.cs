@@ -52,8 +52,8 @@ namespace XamarinBookStoreApp.Services.IdentityServer
                 var gloabalSettingsCustomClaims = Global.Settings.CustomClaims.Get;
                 foreach (var customClaim in gloabalSettingsCustomClaims)
                 {
-                    var hasKey = customClaims.ContainsKey(customClaim);
-                    var canClaim = hasKey == true && customClaims[customClaim].Value<bool>();
+                    var containsKey = customClaims.ContainsKey($"client_{customClaim}");
+                    var canClaim = containsKey == true && customClaims[$"client_{customClaim}"].Value<bool>();
                     await SecureStorage.SetAsync(customClaim, canClaim.ToString());
                 }
                 await SecureStorage.SetAsync(IdentityToken, loginResult.IdentityToken);
