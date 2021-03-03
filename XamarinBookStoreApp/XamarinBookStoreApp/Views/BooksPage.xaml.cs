@@ -29,7 +29,9 @@ namespace XamarinBookStoreApp.Views
             try
             {
 
-                bool.TryParse(await SecureStorage.GetAsync(Permissions.Books.Create), out bool hasCreateBookPermission);
+                var hasCreateBookPermission = await _viewModel.IsGrantedAsync(Permissions.Books.Create);
+
+                //bool.TryParse(await SecureStorage.GetAsync(), out bool hasCreateBookPermission);
                 if (!hasCreateBookPermission) ToolbarItems.Remove(AddBookToolBarItem);
             }
             catch (Exception ex)

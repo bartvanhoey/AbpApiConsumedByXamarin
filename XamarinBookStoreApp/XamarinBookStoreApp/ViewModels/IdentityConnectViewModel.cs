@@ -6,7 +6,7 @@ namespace XamarinBookStoreApp.ViewModels
 {
     public partial class IdentityConnectViewModel : BaseViewModel
     {
-        IIdentityServerService IdentityService => DependencyService.Get<IIdentityServerService>();
+        IIdentityService IdentityService => DependencyService.Get<IIdentityService>();
 
         public Command LoginIdentityServerCommand { get; }
         public Command LogoutIdentityServerCommand { get; }

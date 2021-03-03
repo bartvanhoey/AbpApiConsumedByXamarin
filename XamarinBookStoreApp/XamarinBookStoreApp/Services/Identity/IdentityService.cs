@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace XamarinBookStoreApp.Services.IdentityServer
 {
-    public class IdentityServerService : IIdentityServerService
+    public class IdentityService : IIdentityService
     {
         private const string AccessToken = "access_token";
         private const string IdentityToken = "identity_token";
@@ -49,12 +49,12 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             try
             {
                 var customClaims = ExtractCustomClaims(loginResult.AccessToken);
-                var gloabalSettingsCustomClaims = Global.Settings.CustomClaims.Get;
-                foreach (var customClaim in gloabalSettingsCustomClaims)
+                var globalSettingsPossiblePermissions = Global.Settings.PossiblePermissions.Get;
+                foreach (var permission in globalSettingsPossiblePermissions)
                 {
-                    var containsKey = customClaims.ContainsKey($"client_{customClaim}");
-                    var canClaim = containsKey == true && customClaims[$"client_{customClaim}"].Value<bool>();
-                    await SecureStorage.SetAsync(customClaim, canClaim.ToString());
+                    var containsKey = customClaims.ContainsKey($"client_{permission}");
+                    var canClaim = containsKey == true && customClaims[$"client_{permission}"].Value<bool>();
+                    await SecureStorage.SetAsync(permission, canClaim.ToString());
                 }
                 await SecureStorage.SetAsync(IdentityToken, loginResult.IdentityToken);
                 foreach (var claim in loginResult.User.Claims)
@@ -70,6 +70,8 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             }
             return true;
         }
+
+
 
         public JObject ExtractCustomClaims(string accessToken)
         {

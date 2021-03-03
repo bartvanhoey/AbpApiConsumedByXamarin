@@ -13,7 +13,7 @@ namespace XamarinBookStoreApp.Services.Http
 {
     public class HttpClientService<T, C> : IHttpClientService<T, C> where T : class where C : class
     {
-        public IIdentityServerService IdentityService => DependencyService.Get<IIdentityServerService>();
+        public IIdentityService IdentityService => DependencyService.Get<IIdentityService>();
         Lazy<HttpClient> _httpClient;
         private async Task<string> GetAccessTokenAsync() => await IdentityService.GetAccessTokenAsync();
 

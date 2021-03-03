@@ -18,7 +18,7 @@ namespace XamarinBookStoreApp
             InitializeComponent();
 
             DependencyService.Register<BooksDataStore>();
-            DependencyService.Register<IdentityServerService>();
+            DependencyService.Register<IdentityService>();
             DependencyService.Register<BooksService>();
             DependencyService.Register<HttpClientService<BookDto, CreateBookDto>>();
 

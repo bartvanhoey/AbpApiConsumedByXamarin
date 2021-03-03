@@ -2,7 +2,7 @@
 
 namespace XamarinBookStoreApp.Services.IdentityServer
 {
-    public interface IIdentityServerService
+    public interface IIdentityService
     {
         Task<string> GetAccessTokenAsync();
         Task<bool> LoginAsync();
