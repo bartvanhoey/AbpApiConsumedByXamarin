@@ -14,6 +14,8 @@ namespace XamarinBookStoreApp.ViewModels
         private DateTime publishDate;
         private BookType type;
         private float price;
+        private bool hasDeletePermission;
+
         public Command DeleteCommand { get; }
         public Command CancelCommand { get; }
 
@@ -21,6 +23,12 @@ namespace XamarinBookStoreApp.ViewModels
         {
             DeleteCommand = new Command(async () => await OnDelete());
             CancelCommand = new Command(OnCancel);
+            
+        }
+
+        public bool HasDeleteBookPermission { 
+            get => hasDeletePermission;
+            set => SetProperty(ref hasDeletePermission, value); 
         }
 
         public float Price
@@ -56,6 +64,9 @@ namespace XamarinBookStoreApp.ViewModels
                 LoadBook(value);
             }
         }
+
+       
+
         public async void LoadBook(string bookId)
         {
             try
