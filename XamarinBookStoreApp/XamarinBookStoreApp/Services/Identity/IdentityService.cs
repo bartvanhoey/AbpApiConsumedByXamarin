@@ -71,8 +71,6 @@ namespace XamarinBookStoreApp.Services.IdentityServer
             return true;
         }
 
-
-
         public JObject ExtractCustomClaims(string accessToken)
         {
             var base64payload = accessToken.Split('.')[1];

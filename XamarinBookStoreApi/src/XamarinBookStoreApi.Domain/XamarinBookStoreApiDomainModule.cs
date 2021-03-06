@@ -15,6 +15,7 @@ using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
+using XamarinBookStoreApi.UserPermissions;
 
 namespace XamarinBookStoreApi
 {
