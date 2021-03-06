@@ -33,7 +33,6 @@ namespace XamarinBookStoreApi.EntityFrameworkCore.UserPermissions
       }
       return userPermissions;
     }
-
   }
 
 }
