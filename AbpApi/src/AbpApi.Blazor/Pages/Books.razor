@@ -1,0 +1,64 @@
+@* "NewBook": "New book", *@
+@page "/books"
+@* @attribute [Authorize(AbpApiPermissions.Books.Default)] *@
+@using AbpApi.Permissions
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.Application.Dtos
+@using Volo.Abp.BlazoriseUI
+@using Volo.Abp.AspNetCore.Components.Web
+@* below namespace where IBookAppService exists *@
+@using AbpApi.Application.Contracts.Books
+@* @using AbpApi.Application.Contracts.Books.Dtos *@
+@* @using AbpApi.Domain.Shared.Books *@
+@using AbpApi.Localization
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<AbpApiResource> L
+@inject AbpBlazorMessageLocalizerHelper<AbpApiResource> LH
+@* separate CreateBookDto and UpdateBookDto *@
+@inherits AbpCrudPageBase<IBookAppService, BookDto, Guid, PagedAndSortedResultRequestDto, CreateBookDto, UpdateBookDto>
+@* CreateUpdateBookDto  *@
+@*  @inherits AbpCrudPageBase<IBookAppService, BookDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateBookDto> *@
+
+<Card>
+  <CardHeader>
+    <Row  Class="justify-content-between">
+      <Column ColumnSize="ColumnSize.IsAuto">
+        <h2>@L["Books"]</h2>
+      </Column>
+      <Column ColumnSize="ColumnSize.IsAuto">
+        @if (HasCreatePermission)
+        {
+          <Button Color="Color.Primary" Clicked="OpenCreateModalAsync">@L["NewBook"]</Button>
+        }
+      </Column>
+    </Row>
+  </CardHeader>
+
+  <CardBody>
+    <DataGrid TItem="BookDto" Data="Entities" ReadData="OnDataGridReadAsync" TotalItems="TotalCount" ShowPager="true" PageSize="PageSize">
+      <DataGridColumns>
+        <DataGridEntityActionsColumn TItem="BookDto" @ref="@EntityActionsColumn">
+          <DisplayTemplate>
+            <EntityActions TItem="BookDto" EntityActionsColumn="@EntityActionsColumn">
+              <EntityAction TItem="BookDto" Text="@L["Edit"]" Visible="HasUpdatePermission" Clicked="() => OpenEditModalAsync(context)" />
+              <EntityAction TItem="BookDto" Text="@L["Delete"]" Visible="HasDeletePermission" Clicked="() => DeleteEntityAsync(context)" ConfirmationMessage="() => GetDeleteConfirmationMessage(context)" />
+            </EntityActions>
+          </DisplayTemplate>
+        </DataGridEntityActionsColumn>
+        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Name)" Caption="@L["NameBook"]"></DataGridColumn>  
+        </DataGridColumns>    
+    </DataGrid>
+  </CardBody>
+</Card>
+
+
+
+@code
+{
+  public Books()
+  {
+    @* CreatePolicyName = AbpApiPermissions.Books.Create; *@
+    @* UpdatePolicyName = AbpApiPermissions.Books.Update; *@
+    @* DeletePolicyName = AbpApiPermissions.Books.Delete; *@
+  }
+}
