@@ -1,22 +1,23 @@
-## ABP Framework consumed by a Xamarin.Forms application
+## ABP Framework consumed by a .NET Maui application
 
 ## Introduction
 
-In this article I will explain **how to consume an ABP Framework API with Xamarin.Forms**.
+In this article I will explain **how to consume an ABP Framework API with a .NET Maui app**.
 
 ## Source Code
 
-The sample application has been developed with Blazor as UI framework and SQL Server as database provider.
+The sample ABP Framework application has been developed with Blazor as UI framework and SQL Server as database provider.
 
-The Source code of the completed application is [available on GitHub](https://github.com/bartvanhoey/AbpApiConsumedByXamarin).
+The Source code of the completed application is [available on GitHub](https://github.com/bartvanhoey/AbpApiConsumedByMaui).
 
 ## Requirements
 
 The following tools are needed to be able to run the solution and follow along.
-You will also need to have your editor set up for Xamarin.Forms development.
+You will also need to have your editor set up for .NET Maui development.
 
 * .NET 5.0 SDK
-* VsCode, Visual Studio 2019, or another compatible IDE.
+* VsCode, Visual Studio 2019, or another compatible IDE
+* Visual Studio 2022 for the .NET Maui app
 
 ## Create a new ABP Framework application
 
@@ -26,45 +27,45 @@ You will also need to have your editor set up for Xamarin.Forms development.
 
 ### BookAppService (optional)
 
-To have a simple API that you can consume with the Xamarin.Forms app, add the Books Bookstore code from the BookStore Tutorial (Part1-5).
+To have a simple API that you can consume with the .NET Maui app, add the Books Bookstore code from the BookStore Tutorial (Part1-5).
 
-### Add AbpApi_Xamarin section in appsettings.json file of the AbpApi.DbMigrator project
+### Add an AbpApi_Maui section in appsettings.json file of the AbpApi.DbMigrator project
 
 ```json
     // change the <port:abp-api> with the port were the Swagger page is running on
-    "AbpApi_Xamarin": {
-        "ClientId": "AbpApi_Xamarin",
+    "AbpApi_Maui": {
+        "ClientId": "AbpApi_Maui",
         "ClientSecret": "1q2w3e*",
         "RootUrl": "https://localhost:<port:abp-api>/" 
     }
 ```
 
-### Add Xamarin client IdentityServer configuration
+### Add MauiClient IdentityServer configuration
 
 In the CreateClientAsync method in class IdentityServerDataSeedContributor of the AbpApi.Domain project.
 
 ```csharp
-    // Xamarin Client
-    var xamarinClientId = configurationSection["AbpApi_Xamarin:ClientId"];
-    if (!xamarinClientId.IsNullOrWhiteSpace())
+    // Maui Client
+    var mauiClientId = configurationSection["AbpApi_Maui:ClientId"];
+    if (!mauiClientId.IsNullOrWhiteSpace())
     {
-        var xamarinRootUrl = configurationSection["AbpApi_Xamarin:RootUrl"].TrimEnd('/');
+        var mauiRootUrl = configurationSection["AbpApi_Maui:RootUrl"].TrimEnd('/');
         await CreateClientAsync(
-            name: xamarinClientId,
+            name: mauiClientId,
             scopes: commonScopes,
             grantTypes: new[] { "authorization_code" },
-            secret: configurationSection["AbpApi_Xamarin:ClientSecret"]?.Sha256(),
+            secret: configurationSection["AbpApi_Maui:ClientSecret"]?.Sha256(),
             requireClientSecret: false,
-            redirectUri: "xamarinformsclients:/authenticated",
-            postLogoutRedirectUri: "xamarinformsclients:/signout-callback-oidc",
-            corsOrigins: new[] { xamarinRootUrl.RemovePostFix("/") }
+            redirectUri: "mauiclients:/authenticated",
+            postLogoutRedirectUri: "mauiclients:/signout-callback-oidc",
+            corsOrigins: new[] { mauiRootUrl.RemovePostFix("/") }
         );
     }
 ```
 
-### Insert XamarinClient setting into Database
+### Insert MauiClient settings into Database
 
-Run AbpApi.DbMigrator project to execute the IdentityServerDataSeedContributor to insert the XamarinClient settings into the database.
+Run AbpApi.DbMigrator project to execute the IdentityServerDataSeedContributor to insert the MauiClient settings into the database.
 
 ### Start API and Blazor project
 
@@ -73,7 +74,7 @@ Start API and Blazor project to see if all projects are running successfully. Ke
 ## Download & setup ngrok
 
 With ngrok you can mirror your localhost API endpoint to a worldwide available API endpoint.
-In this way you can overcome the problem Xamarin.Forms app mixing up localhost from the API with localhost from the Xamarin.Forms app.
+In this way you can overcome the problem .NET Maui app mixing up localhost from the API with localhost from the .NET Maui app.
 
 ### Open a command prompt in the root of ABP Framework application and run the command below
 
@@ -90,45 +91,29 @@ In this way you can overcome the problem Xamarin.Forms app mixing up localhost f
     "https://<your-ngrok-generated-generated-number-here>.eu.ngrok.io"
 ```
 
-## Create a new Xamarin.Forms application
+## Create a new .NET Maui application
 
-### Create a new Xamarin app in Visual Studio (Flyout template)
+### Create a new Maui app in Visual Studio 2022
 
-![Create a new Xamarin.Forms app](Images/create_new_mobile_app.jpg)
+Create a new .NET Maui app with the name **AbpMauiApp** in Visual Studio 2022.
 
-### Update Nuget Packages
+### Run .NET Maui application
 
-I updated the following nuget packages in the Xamarin.core project and the Android.project.
-
-```bash
-    Xamarin.Forms" Version="5.0.0.296
-    Xamarin.Essentials" Version="1.7.0
-```
-
-### Add a FlyoutItem in file AppShell.xaml of the AbpXamarinForms core project
-
-```html
-    <FlyoutItem Title="Login" Icon="icon_about.png">
-        <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate local:LoginPage}" />
-    </FlyoutItem>
-    // ... other FlyoutItems here
-```
-
-### Run XamarinForms application
-
-Start the Xamarin.Forms application and stop it again when it runs successfully.
+Start the .NET Maui application and stop it again when it runs successfully.
 
 ## Connect to AbpApi IdentityServer
 
-### Install IdentityModel and IdentityModel.OidcClient nuget packages
+### Install IdentityModel, IdentityModel.OidcClient and Newtonsoft.json nuget packages
 
 Open Nuget Package Manager and install **IdentityModel** and **IdentityModel.OidcClient** nuget packages in the core project.
 
-![Installed nuget packages](Images/installed_nuget_packages_in_xamarin_forms.jpg)
+![Installed nuget packages](Images/installed_nuget_packages_in_maui_app.jpg)
+
+### Add a Services folder in root of the .NET Maui app
 
 ### Add a WebAuthenticatorBrowser class to the Services folder
 
-This class is needed to open a browser page in your Xamarin.Forms application.
+This class is needed to open a browser page in your .NET Maui application.
 
 ```csharp
 using System;
@@ -136,9 +121,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IdentityModel.OidcClient.Browser;
-using Xamarin.Essentials;
+using Microsoft.Maui.Essentials;
 
-namespace AbpXamarinForms.Services
+namespace AbpMauiApp.Services
 {
     internal class WebAuthenticatorBrowser : IBrowser
     {
@@ -183,19 +168,20 @@ namespace AbpXamarinForms.Services
 ### Add a LoginService class to the Services folder
 
 ```csharp
-using AbpXamarinForms.Services.IdentityServer.Oidc;
+using AbpMauiApp.Services;
 using IdentityModel.OidcClient;
+using System.Threading.Tasks;
 
-namespace AbpXamarinForms.Services
+namespace AbpMaui.Services
 {
     public class LoginService
     {
-        private const string _authorityUrl = "https://<your-ngrok-generated-generated-number-here>.eu.ngrok.io";
-        private const string _redirectUrl = "xamarinformsclients:/authenticated";
-        private const string _postLogoutRedirectUrl = "xamarinformsclients:/signout-callback-oidc";
+        private const string _authorityUrl = "https://7bb4-2a02-810d-98c0-576c-a0b1-8ff0-f58c-8179.eu.ngrok.io";
+        private const string _redirectUrl = "mauiclients:/authenticated";
+        private const string _postLogoutRedirectUrl = "mauiclients:/signout-callback-oidc";
         private const string _scopes = "email openid profile role phone address AbpApi";
         private const string _clientSecret = "1q2w3e*";
-        private const string _clientId = "AbpApi_Xamarin";
+        private const string _clientId = "AbpApi_Maui";
 
 
         private OidcClient CreateOidcClient()
@@ -212,62 +198,89 @@ namespace AbpXamarinForms.Services
             };
             return new OidcClient(options);
         }
+
+        public async Task<string> AuthenticateAsync()
+        {
+            var oidcClient = CreateOidcClient();
+            var loginResult = await oidcClient.LoginAsync(new LoginRequest());
+            return loginResult.AccessToken;
+        }
     }
 }
 
 ```
 
-### Update content of the LoginViewModel.cs class
+### Replace content of the MainPage.xaml file
+
+```html
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AbpMauiApp.MainPage"
+             BackgroundColor="{DynamicResource SecondaryColor}">
+
+    <ScrollView>
+        <Grid RowSpacing="25" RowDefinitions="Auto"
+              Padding="{OnPlatform iOS='30,60,30,30', Default='30'}">
+            <Button 
+                Text="Login"
+                FontAttributes="Bold"
+                Grid.Row="3"
+                Clicked="OnLoginClicked"
+                HorizontalOptions="Center" />
+        </Grid>
+    </ScrollView>
+</ContentPage>
+```
+
+### Replace content of the MainPage.xaml.cs class
 
 ```csharp
-using AbpXamarinForms.Services;
-using IdentityModel.Client;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Xamarin.Forms;
+using AbpMaui.Services;
+using IdentityModel.Client;
+using Microsoft.Maui.Controls;
+using Newtonsoft.Json;
 
-namespace AbpXamarinForms.ViewModels
+namespace AbpMauiApp
 {
-    public class LoginViewModel : BaseViewModel
+    public partial class MainPage : ContentPage
     {
-        private readonly LoginService _loginService = new LoginService();
-        public Command LoginCommand { get; }
+        private readonly LoginService _loginService = new();
 
-        public LoginViewModel()
+        public MainPage()
         {
-            LoginCommand = new Command(OnLoginClicked);
+            InitializeComponent();
         }
 
-        private async void OnLoginClicked(object obj)
+        private async void OnLoginClicked(object sender, EventArgs e)
         {
             var accessToken = await _loginService.AuthenticateAsync();
             Console.WriteLine($"accesstoken: {accessToken}");
 
             var httpClient = GetHttpClient(accessToken);
-            var response = await httpClient.Value.GetAsync("https://<your-ngrok-generated-generated-number-here>.eu.ngrok.io/api/app/book");
+            var response = await httpClient.Value.GetAsync("https://7bb4-2a02-810d-98c0-576c-a0b1-8ff0-f58c-8179.eu.ngrok.io/api/app/book");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var booksResult = JsonConvert.DeserializeObject<BooksResult>(content);
 
                 var book = booksResult.Items.FirstOrDefault();
-                Console.WriteLine($"book: {book.Name} - price: {book.Price}");
+                // Set a breakpoint on the line below
+                var bookDetail = $"book: {book.Name} - price: {book.Price}";
             }
-            // Set a breakpoint on the line below
-            Console.ReadLine();
         }
 
-        private Lazy<HttpClient> GetHttpClient(string accessToken)
+        private static Lazy<HttpClient> GetHttpClient(string accessToken)
         {
-            var httpClient = new Lazy<HttpClient>(() => new HttpClient(GetHttpClientHandler()));
+            var httpClient = new Lazy<HttpClient>(() => new HttpClient(MainPage.GetHttpClientHandler()));
             httpClient.Value.SetBearerToken(accessToken);
             return httpClient;
         }
 
-        private HttpClientHandler GetHttpClientHandler()
+        private static HttpClientHandler GetHttpClientHandler()
         {
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // EXCEPTION : Javax.Net.Ssl.SSLHandshakeException: 'java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.'
@@ -278,7 +291,6 @@ namespace AbpXamarinForms.ViewModels
             };
             return httpClientHandler;
         }
-
     }
 
     public class BooksResult
@@ -311,36 +323,19 @@ namespace AbpXamarinForms.ViewModels
         Poetry
     }
 }
+
 ```
 
-### Add a WebAuthenticationCallbackActivity class in root of the Android project
+## Run .NET Maui application to see it working
 
-```csharp
-using Android.App;
-using Android.Content;
-using Android.Content.PM;
+Update the **_authorityUrl** field in the LoginService class with the correct **ngrok Forwarding https url** and run the Maui application on an emulator or physical device.
 
-namespace AbpXamarinForms.Droid
-{
-    [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop)]
-    [IntentFilter(new[] { Intent.ActionView },
-        Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "xamarinformsclients")]
-    public class WebAuthenticationCallbackActivity : Xamarin.Essentials.WebAuthenticatorCallbackActivity
-    {
-    }
-}
-```
+If all goes well, your Maui application opens a browser window where you need to authenticate with your administrator credentials (admin - 1q2w3E*). Once logged in, the app makes a call to the ABP Framework API that returns the books from the database.
 
-## Run Xamarin.Forms application
+![Api consumed by Maui app](Images/api_consumed_by_maui_app.gif)
 
-Update the **_authorityUrl** field in the LoginService class with the correct **ngrok Forwarding https url** and run the XamarinForms application on an emulator or physical device.
+Et voilà! As you can see  in the animated gif the .NET Maui app successfully retrieves data from the database by connecting to the IdentityServer4 and consuming the ABP Framework API.
 
-If all goes well, your XamarinForms application opens a browser window where you need to authenticate with your administrator credentials (admin - 1q2w3E*). Once logged in, the app makes a call to the ABP Framework API that returns the books from the database.
-
-![Api consumed by Xamarin app](Images/api_consumed_by_xamarin_app.gif)
-
-Et voilà! As you can see  in the animated gif the Xamarin.Forms app successfully retrieves data from the database by connecting to the IdentityServer4 and consuming the ABP Framework API.
-
-Get the [source code](https://github.com/bartvanhoey/AbpApiConsumedByXamarin) on GitHub.
+Get the [source code](https://github.com/bartvanhoey/AbpApiConsumedByMaui) on GitHub.
 
 Enjoy and have fun!

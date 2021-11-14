@@ -213,6 +213,23 @@ namespace AbpApi.IdentityServer
                     corsOrigins: new[] { xamarinRootUrl.RemovePostFix("/") }
                 );
             }
+
+            // Maui Client
+            var mauiClientId = configurationSection["AbpApi_Maui:ClientId"];
+            if (!mauiClientId.IsNullOrWhiteSpace())
+            {
+                var mauiRootUrl = configurationSection["AbpApi_Maui:RootUrl"].TrimEnd('/');
+                await CreateClientAsync(
+                    name: mauiClientId,
+                    scopes: commonScopes,
+                    grantTypes: new[] { "authorization_code" },
+                    secret: configurationSection["AbpApi_Maui:ClientSecret"]?.Sha256(),
+                    requireClientSecret: false,
+                    redirectUri: "mauiclients:/authenticated",
+                    postLogoutRedirectUri: "mauiclients:/signout-callback-oidc",
+                    corsOrigins: new[] { mauiRootUrl.RemovePostFix("/") }
+                );
+            }
         }
 
         private async Task<Client> CreateClientAsync(
