@@ -160,7 +160,7 @@ namespace AbpApi.IdentityServer
                     corsOrigins: new[] { webClientRootUrl.RemovePostFix("/") }
                 );
             }
-            
+
 
             // Blazor Client
             var blazorClientId = configurationSection["AbpApi_Blazor:ClientId"];
@@ -179,9 +179,7 @@ namespace AbpApi.IdentityServer
                     corsOrigins: new[] { blazorRootUrl.RemovePostFix("/") }
                 );
             }
-            
-            
-            
+
             // Swagger Client
             var swaggerClientId = configurationSection["AbpApi_Swagger:ClientId"];
             if (!swaggerClientId.IsNullOrWhiteSpace())
@@ -196,6 +194,23 @@ namespace AbpApi.IdentityServer
                     requireClientSecret: false,
                     redirectUri: $"{swaggerRootUrl}/swagger/oauth2-redirect.html",
                     corsOrigins: new[] { swaggerRootUrl.RemovePostFix("/") }
+                );
+            }
+
+            // Xamarin Client
+            var xamarinClientId = configurationSection["AbpApi_Xamarin:ClientId"];
+            if (!xamarinClientId.IsNullOrWhiteSpace())
+            {
+                var xamarinRootUrl = configurationSection["AbpApi_Xamarin:RootUrl"].TrimEnd('/');
+                await CreateClientAsync(
+                    name: xamarinClientId,
+                    scopes: commonScopes,
+                    grantTypes: new[] { "authorization_code" },
+                    secret: configurationSection["AbpApi_Xamarin:ClientSecret"]?.Sha256(),
+                    requireClientSecret: false,
+                    redirectUri: "xamarinformsclients:/authenticated",
+                    postLogoutRedirectUri: "xamarinformsclients:/signout-callback-oidc",
+                    corsOrigins: new[] { xamarinRootUrl.RemovePostFix("/") }
                 );
             }
         }

@@ -100,5 +100,8 @@ namespace AbpApi.Blazor
                 options.AddMaps<AbpApiBlazorModule>();
             });
         }
+
+        
     }
+
 }
