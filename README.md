@@ -6,7 +6,6 @@ In this article, I will explain **how to consume an ABP Framework API with Xamar
 
 The article is a complete rewrite of an older one that you can find here [here](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/AbpIo/ConsumeAbpFrameworkApiFromXamarinForms_old.md).
 
-
 ## Source Code
 
 The sample application has been developed with Blazor as UI framework and SQL Server as database provider.
@@ -18,7 +17,7 @@ The Source code of the completed application is [available on GitHub](https://gi
 The following tools are needed to run the solution and follow along.
 You will also need to have your editor set up for Xamarin.Forms development.
 
-* .NET 5.0 SDK
+* .NET 6.0 SDK
 * VsCode, Visual Studio 2019, or another compatible IDE.
 
 ## Create a new ABP Framework application
@@ -350,7 +349,7 @@ namespace AbpXamarinForms.Droid
 * Run the **AbpXamarinForms** application on an emulator or physical device.
 * Click the **Login button** and enter the **administrator credentials** (admin, 1q2w3E*)
 
-**WARNING**: You will probably get a **SecurityTokenInvalidIssuerException**
+**WARNING**: The API will probably throw a **SecurityTokenInvalidIssuerException**.
 
 ## Fix SecurityTokenInvalidIssuerException: IDX10205: Issuer validation failed
 

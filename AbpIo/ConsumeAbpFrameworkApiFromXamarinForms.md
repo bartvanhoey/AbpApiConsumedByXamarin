@@ -349,7 +349,7 @@ namespace AbpXamarinForms.Droid
 * Run the **AbpXamarinForms** application on an emulator or physical device.
 * Click the **Login button** and enter the **administrator credentials** (admin, 1q2w3E*)
 
-**WARNING**: You will probably get a **SecurityTokenInvalidIssuerException**
+**WARNING**: The API will probably throw a **SecurityTokenInvalidIssuerException**.
 
 ## Fix SecurityTokenInvalidIssuerException: IDX10205: Issuer validation failed
 
