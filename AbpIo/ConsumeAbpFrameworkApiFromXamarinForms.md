@@ -96,7 +96,7 @@ In this way you can overcome the problem Xamarin.Forms app mixing up localhost f
 
 ### Create a new Xamarin app in Visual Studio (Flyout template)
 
-![Create a new Xamarin.Forms app](Images/create_new_mobile_app.jpg)
+![Create a new Xamarin.Forms app](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/Images/create_new_mobile_app.jpg)
 
 ### Update Nuget Packages
 
