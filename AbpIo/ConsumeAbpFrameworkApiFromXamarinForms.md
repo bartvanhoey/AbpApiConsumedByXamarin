@@ -126,7 +126,7 @@ Start the Android the Xamarin.Forms application and stop it again when it runs s
 
 Open the Nuget Package Manager and install **IdentityModel**, **IdentityModel.OidcClient**  and **Newtonsoft.json** nuget packages in the core project.
 
-![Installed nuget packages](Images/installed_nuget_packages_in_xamarin_forms.jpg)
+![Installed nuget packages](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/Images/installed_nuget_packages_in_xamarin_forms.jpg)
 
 ### Add a WebAuthenticatorBrowser class to the Services folder in the Core project
 
