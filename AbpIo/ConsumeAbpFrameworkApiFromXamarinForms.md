@@ -84,7 +84,7 @@ In this way you can overcome the problem Xamarin.Forms app mixing up localhost f
     ngrok http -region eu https://localhost:<replace-me-with-the-abp-api-port>/ 
 ```
 
-![Ngrok port forwarding](Images/ngrok_localhost_port_forwarding.jpg)
+![Ngrok port forwarding](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/Images/ngrok_localhost_port_forwarding.jpg)
 
 ### Copy and remember Ngrok Forwarding https endpoint
 
