@@ -1,518 +1,413 @@
-## ABP Framework API consumed by a Xamarin.Forms application
+## ABP Framework consumed by a Xamarin.Forms application
 
 ## Introduction
 
-This article is about how you can **connect a Xamarin.Forms application to an ABP Framework application and consume its API**. For this article I created an ABP Framework application with a separate IdentityServer project and a Blazor UI and added the Books BookStore functionality from the ABP Framework tutorial.
+In this article I will explain **how to consume an ABP Framework API with Xamarin.Forms**.
 
-A special thanks goes to **Anton Wieslander** from the [Raw Coding](https://www.youtube.com/c/RawCoding) YouTube channel, where he explains in [Episode.21.2 Xamarin]([https](https://www.youtube.com/watch?v=McTTgj7NEf0&list=PLOeFnOV9YBa7dnrjpOG6lMpcyd7Wn7E8V&index=25&ab_channel=RawCoding))  how to configure **a Xamarin.Forms app to connect to IdentityServer4**.
+The article is a complete rewrite of an older article that you can find here [here](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/AbpIo/ConsumeAbpFrameworkApiFromXamarinForms_old.md).
 
-As I don't have an IPhone or MacBook in my possession, I wrote and tested the Xamarin.Forms app only with an Android Device in the Android Device Emulator. The code needed to connect from an IPhone you will need to write yourself.
+## Source Code
 
-Be careful to use this IdentityServer setup, because I only tested it in a development environment. If you copy code from this article into an application it is at your own risk, I can never be held responsible for possible bugs, security breaches or any problem you run in to.
+The sample application has been developed with Blazor as UI framework and SQL Server as database provider.
 
-### Source Code
-
-The Source code of the completed application is [available on GitHub](https://github.com/bartvanhoey/AbpApiConsumedByXamarin).
+The Source code of the completed application is [available on GitHub](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/tree/main/XamarinForms).
 
 ## Requirements
 
-The following tools are needed to be able to run the solution and follow along. You will also need to have Visual Studio set up for Xamarin.Forms development.
+The following tools are needed to be able to run the solution and follow along.
+You will also need to have your editor set up for Xamarin.Forms development.
 
 * .NET 5.0 SDK
-* Visual Studio 2019 16.8.0+ with Xamarin setup and Android SDK 10.0-Q - API 29
+* VsCode, Visual Studio 2019, or another compatible IDE.
 
-## Setup BookStore API and IdentityServer
-
-### Create a new ABP project with a separate IdentityServer project
+## Create a new ABP Framework application
 
 ```bash
-    abp new XamarinBookStoreApi -u blazor -o XamarinBookStoreApi --separate-identity-server
+    abp new AbpApi -u blazor -o AbpApi
 ```
 
-### Find your IP address
+### BookAppService (optional)
 
-Open a command prompt and enter `ipconfig` to fin you IP address.
+To have a simple API that you can consume with the Xamarin.Forms app, add the Books Bookstore code from the BookStore Tutorial (Part1-5).
 
-### replace all instances of localhost with your IP address
-
-Hit CTRL+SHIFT+H to replace all localhost instances in the XamarinBookStoreApi project with your IP address. You need to replace them because the Xamarin.Forms app mixes up localhost from the API with localhost from the Xamarin.Forms app.
-
-```bash
-    https://192.168.1.108:44349" => "https://192.168.1.108:44349"
-```
-
-![IP-address](../Images/IP_address.jpg)
-
-### Add XamarinBookStoreApi_Xamarin section in appsettings.json file of the XamarinBookStoreApi.DbMigrator project
+### Add AbpApi_Xamarin section in appsettings.json file of the AbpApi.DbMigrator project
 
 ```json
-      "XamarinBookStoreApi_Xamarin": {
-        "ClientId": "XamarinBookStoreApi_Xamarin",
+    // change the <replace-me-with-the-abp-api-port> with the port were the Swagger page is running on
+    "AbpApi_Xamarin": {
+        "ClientId": "AbpApi_Xamarin",
         "ClientSecret": "1q2w3e*",
-        "RootUrl": "https://<your-ip-address>:<port-identityserver>" 
-        // RootUrl = "AuthServer:Authority": "https://192.168.1.108:44349" in appsettings.json HttpApi.Host project
-      }
+        "RootUrl": "https://localhost:<replace-me-with-the-abp-api-port>/" 
+    }
 ```
 
 ### Add Xamarin client IdentityServer configuration
 
-In the CreateClientAsync method in class IdentityServerDataSeedContributor of the XamarinBookStoreApi.Domain project.
+In the CreateClientAsync method in class IdentityServerDataSeedContributor of the AbpApi.Domain project.
 
 ```csharp
-  // Xamarin Client
-  var xamarinClientId = configurationSection["XamarinBookStoreApi_Xamarin:ClientId"];
-  if (!xamarinClientId.IsNullOrWhiteSpace())
-  {
-      var xamarinRootUrl = configurationSection["XamarinBookStoreApi_Xamarin:RootUrl"].TrimEnd('/');
-
-      await CreateClientAsync(
-          name: xamarinClientId,
-          scopes: commonScopes,
-          grantTypes: new[] { "authorization_code" },
-          secret: configurationSection["XamarinBookStoreApi_Xamarin:ClientSecret"]?.Sha256(),
-          requireClientSecret: false,
-          redirectUri: "xamarinformsclients://callback",
-          corsOrigins: new[] { xamarinRootUrl.RemovePostFix("/") }
-      );
-  }
-```
-
-### Update method ConfigureAuthentication of the XamarinBookStoreApiHttpApiHostModule in HttpApi.Host project
-
-To overcome issue _System.InvalidOperationException: IDX20803: Unable to obtain configuration from: 'System.String'.
- ---> System.IO.IOException: IDX20804: Unable to retrieve document from: 'System.String'_  update the ConfigureAuthentication method.
-
-WARNING: Do this only in a development environment, not in a production environment!
-
-```csharp
-    private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
+    // Xamarin Client
+    var xamarinClientId = configurationSection["AbpApi_Xamarin:ClientId"];
+    if (!xamarinClientId.IsNullOrWhiteSpace())
     {
-      context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-          .AddJwtBearer(options =>
-          {
-            // ...
-            
-            options.BackchannelHttpHandler = new HttpClientHandler
-            {
-              ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-          });
+        var xamarinRootUrl = configurationSection["AbpApi_Xamarin:RootUrl"].TrimEnd('/');
+        await CreateClientAsync(
+            name: xamarinClientId,
+            scopes: commonScopes,
+            grantTypes: new[] { "authorization_code" },
+            secret: configurationSection["AbpApi_Xamarin:ClientSecret"]?.Sha256(),
+            requireClientSecret: false,
+            redirectUri: "xamarinformsclients:/authenticated",
+            postLogoutRedirectUri: "xamarinformsclients:/signout-callback-oidc",
+            corsOrigins: new[] { xamarinRootUrl.RemovePostFix("/") }
+        );
     }
 ```
 
-### Books BookStore tutorial
+### Insert XamarinClient setting into Database
 
-To have a simple API that can be consumed by the Xamarin.Forms app, I added the Books Bookstore code from the BookStore Tutorial (Part1-5).
+Run AbpApi.DbMigrator project to execute the IdentityServerDataSeedContributor to insert the XamarinClient settings into the database.
 
-Open a command prompt in the DbMigrations project and run the command below to add a migration.
+### Start API and Blazor project
+
+Start API and Blazor project to see if all projects are running successfully. Keep the API running!
+
+## Download & setup ngrok
+
+With ngrok you can mirror your localhost API endpoint to a worldwide available API endpoint.
+In this way you can overcome the problem Xamarin.Forms app mixing up localhost from the API with localhost from the Xamarin.Forms app.
+
+### Open a command prompt in the root of ABP Framework application and run the command below
 
 ```bash
-    dotnet ef migrations add BookEntityAdded
+    -- specify another region when needed
+    ngrok http -region eu https://localhost:<replace-me-with-the-abp-api-port>/ 
 ```
 
-### DbMigrations
+![Ngrok port forwarding](Images/ngrok_localhost_port_forwarding.jpg)
 
-Run the XamarinBookStoreApi.DbMigrator project to apply the database migrations.
+### Copy and remember Ngrok Forwarding https endpoint
 
-### Run IdentityServer, Api and Blazor project
+```bash
+    "https://<your-ngrok-generated-generated-number-here>.eu.ngrok.io"
+```
 
-Start the IdentityServer, API and Blazor project to see if all projects run successfully.
+## Create a new Xamarin.Forms application
 
-## Xamarin.Forms app
+### Create a new Xamarin app in Visual Studio (Flyout template)
 
-### Create a Xamarin.Forms app and setup the basic project structure
+![Create a new Xamarin.Forms app](Images/create_new_mobile_app.jpg)
 
-#### Create a new Xamarin app in Visual Studio (Flyout template)
-
-![Create a new Xamarin.Forms app](../Images/create_new_mobile_app.jpg)
-
-#### Update Nuget Packages
+### Update Nuget Packages
 
 I updated the following nuget packages in the Xamarin.core project and the Android.project.
 
 ```bash
-    Xamarin.Forms" Version="5.0.0.2012
-    Xamarin.Essentials" Version="1.6.1
+    Xamarin.Forms" Version="5.0.0.2244
+    Xamarin.Essentials" Version="1.7.0
 ```
 
-#### Add a FlyoutItem in file AppShell.xaml of the XamarinBookStoreApp core project
+### Add a FlyoutItem in file AppShell.xaml of the AbpXamarinForms core project
 
 ```html
-    <FlyoutItem Title="IdentityServer" Icon="icon_identity_server.png">
-        <ShellContent Route="IdentityConnectPage" ContentTemplate="{DataTemplate local:IdentityConnectPage}" />
+    <FlyoutItem Title="Login" Icon="icon_about.png">
+        <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate local:LoginPage}" />
     </FlyoutItem>
     // ... other FlyoutItems here
 ```
 
-#### Add a new ContentPage IdentityConnectPage.xaml in the Views folder of the XamarinBookStoreApp core project
+### Run XamarinForms application
 
-```html
-  <?xml version="1.0" encoding="utf-8" ?>
-  <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-              x:Class="XamarinBookStoreApp.Views.IdentityConnectPage"
-                Title="{Binding Title}">
-      <ContentPage.Content>
-          <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
-              <Button VerticalOptions="Center" Text="Connect" Command="{Binding ConnectToIdentityServerCommand}"/>
-          </StackLayout>
-      </ContentPage.Content>
-  </ContentPage>
-```
+Start the Android the Xamarin.Forms application and stop it again when it runs successfully.
 
-#### Set BindingContext in IdentityConnectPage.xaml.cs in the Views folder
+## Connect to AbpApi IdentityServer
 
-```csharp
-  using Xamarin.Forms;
-  using Xamarin.Forms.Xaml;
-  using XamarinBookStoreApp.ViewModels;
+### Install IdentityModel and IdentityModel.OidcClient nuget packages
 
-  namespace XamarinBookStoreApp.Views
-  {
-      [XamlCompilation(XamlCompilationOptions.Compile)]
-      public partial class IdentityConnectPage : ContentPage
-      {
-          public IdentityConnectPage()
-          {
-              InitializeComponent();
-              this.BindingContext = new IdentityConnectViewModel();
-          }
-      }
-  }
-```
+Open the Nuget Package Manager and install **IdentityModel**, **IdentityModel.OidcClient**  and **Newtonsoft.json** nuget packages in the core project.
 
-#### Create a new file IdentityConnectViewModel.cs in the ViewModels folder of the XamarinBookStoreApp project
+![Installed nuget packages](Images/installed_nuget_packages_in_xamarin_forms.jpg)
+
+### Add a WebAuthenticatorBrowser class to the Services folder in the Core project
+
+This class is needed to open a browser page in your Xamarin.Forms application.
 
 ```csharp
 using System;
-using Xamarin.Forms;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using IdentityModel.OidcClient.Browser;
+using Xamarin.Essentials;
 
-namespace XamarinBookStoreApp.ViewModels
+namespace AbpXamarinForms.Services
 {
-    public class IdentityConnectViewModel : BaseViewModel
+    internal class WebAuthenticatorBrowser : IBrowser
     {
-        public Command ConnectToIdentityServerCommand { get; }
+        private readonly string _callbackUrl;
 
-        public IdentityConnectViewModel()
+        public WebAuthenticatorBrowser(string callbackUrl = null) => _callbackUrl = callbackUrl ?? "";
+
+        public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken = default)
         {
-            Title = "IdentityServer";
-            ConnectToIdentityServerCommand = new Command(ConnectToIdentityServer);
+            try
+            {
+                var callbackUrl = string.IsNullOrEmpty(_callbackUrl) ? options.EndUrl : _callbackUrl;
+                var authResult =
+                    await WebAuthenticator.AuthenticateAsync(new Uri(options.StartUrl), new Uri(callbackUrl));
+                var authorizeResponse = ToRawIdentityUrl(options.EndUrl, authResult);
+                return new BrowserResult
+                {
+                    Response = authorizeResponse
+                };
+            }
+            catch (Exception exception)
+            {
+                
+                return new BrowserResult
+                {
+                    ResultType = BrowserResultType.UnknownError,
+                    Error = exception.ToString()
+                };
+            }
         }
 
-        private void ConnectToIdentityServer(object obj)
+        private static string ToRawIdentityUrl(string redirectUrl, WebAuthenticatorResult result)
         {
-            throw new NotImplementedException();
+            var parameters = result.Properties.Select(pair => $"{pair.Key}={pair.Value}");
+            var values = string.Join("&", parameters);
+            return $"{redirectUrl}#{values}";
         }
     }
 }
 ```
 
-#### Run the Xamarin.Forms
-
-Open the Android Device Manager and launch an the Android Device of your Choice. I used the Pixel2 with Android10 and API 29.
-
-![Pixel2](../Images/pixel2_q10_api29.jpg)
-
-Start the Xamarin.Forms app and stop it again when it runs successfully.
-
-![Mobile app start screen](../Images/mobile_app_start_screen.jpg)
-
-### Make the XamarinBookStoreApp.Android IdentityServer ready
-
-#### Open Nuget Package Manager and install Plugin.CurrentActivity Nuget Package in the Android project
-
-![Plugin.CurrentActivity](../Images/plugin_currentactivity.jpg)
-
-#### Open class MainActivity and update its contents
+### Add a LoginService class to the Services folder
 
 ```csharp
-  // Add the 2 using statements below
-  using Xamarin.Forms;
-  using Plugin.CurrentActivity;
-  
-  using Android.App;
-  using Android.Content.PM;
-  using Android.Runtime;
-  using Android.OS;
+using IdentityModel.OidcClient;
+using System.Threading.Tasks;
 
-  namespace XamarinBookStoreApp.Droid
-  {
-      [Activity(Label = "XamarinBookStoreApp", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize )]
-      public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
-      {
-          protected override void OnCreate(Bundle savedInstanceState)
-          {   
-              // Add this line of code
-              DependencyService.Register<ChromeCustomTabsBrowser>();
-
-              TabLayoutResource = Resource.Layout.Tabbar;
-              ToolbarResource = Resource.Layout.Toolbar;
-
-              base.OnCreate(savedInstanceState);
-
-              Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-              global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-              // Add this line of code
-              CrossCurrentActivity.Current.Init(this, savedInstanceState);
-              LoadApplication(new App());
-          }
-          public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
-          {
-              Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
-              base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-          }
-      }
-  }
-```
-
-#### Generate a ChromeCustomTabsBrowser.cs class in a new file and update its contents
-
-```csharp
-  using Android.Support.CustomTabs;
-  using Android.App;
-  using Android.Content;
-  using Plugin.CurrentActivity;
-  using System;
-  using System.Threading;
-  using System.Threading.Tasks;
-
-  namespace XamarinBookStoreApp.Droid
-  {
-      public class ChromeCustomTabsBrowser : IBrowser
-      {
-          private readonly Activity _context;
-          private readonly CustomTabsActivityManager _manager;
-
-          public ChromeCustomTabsBrowser() : this(CrossCurrentActivity.Current.Activity) { }
-
-
-          public ChromeCustomTabsBrowser(Activity context)
-          {
-              _context = context;
-              _manager = new CustomTabsActivityManager(_context);
-          }
-
-          public Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken = default)
-          {
-              var task = new TaskCompletionSource<BrowserResult>();
-
-              var builder = new CustomTabsIntent.Builder(_manager.Session)
-                //.SetToolbarColor(Color.FromArgb(255, 52, 152, 219))
-                .SetShowTitle(true)
-                .EnableUrlBarHiding();
-
-              var customTabsIntent = builder.Build();
-
-              // ensures the intent is not kept in the history stack, which makes
-              // sure navigating away from it will close it
-              customTabsIntent.Intent.AddFlags(ActivityFlags.NoHistory);
-
-              Action<string> callback = null;
-              callback = url =>
-              {
-                  OidcCallbackActivity.Callbacks -= callback;
-
-                  task.SetResult(new BrowserResult()
-                  {
-                      Response = url
-                  });
-              };
-
-              OidcCallbackActivity.Callbacks += callback;
-
-              customTabsIntent.LaunchUrl(_context, Android.Net.Uri.Parse(options.StartUrl));
-
-              return task.Task;
-          }
-      }
-  }
-```
-
-Hover over IBrowser and **Install package IdentityModel.OidcClient.Browser**;  
-
-#### Generate a OidcCallbackActivity.cs class in a new file and update its contents
-
-```csharp
-  using Android.App;
-  using Android.Content;
-  using Android.OS;
-  using Android.Util;
-  using System;
-
-  namespace XamarinBookStoreApp.Droid
-  {
-      [Activity(Label = "OidcCallbackActivity")]
-      [IntentFilter(new[] { Intent.ActionView },
-              Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-              DataScheme = "xamarinformsclients")]
-      //DataHost = "callback")]
-      public class OidcCallbackActivity : Activity
-      {
-          public static event Action<string> Callbacks;
-
-          public OidcCallbackActivity()
-          {
-              Log.Debug("OidcCallbackActivity", "constructing OidcCallbackActivity");
-          }
-
-          protected override void OnCreate(Bundle savedInstanceState)
-          {
-              base.OnCreate(savedInstanceState);
-
-              Callbacks?.Invoke(Intent.DataString);
-
-              Finish();
-
-              StartActivity(typeof(MainActivity));
-          }
-      }
-  }
-```
-
-#### Add a network_security_config.xml to folder Resources/xml in the Android project
-
-```html
-    <?xml version="1.0" encoding="utf-8"?>
-    <network-security-config>
-        <domain-config cleartextTrafficPermitted="true">
-            <domain includeSubdomains="true"><your-ip-address-here></domain>
-        </domain-config>
-    </network-security-config>
-```
-
-You need to add file network_security_config.xml to overcome the Privacy Error - Your connection is not private below:
-
-![Your connection is not private](../Images/your_connection_is_not_private.jpg)
-
-#### Update Target Framework to Android 10.0 (Q)
-
-Open the Properties window of the Android project and update the Compile using Android version (Target Framework).
-
-![Android10](../Images/android_10.jpg)
-
-### Make the XamarinBookStoreApp IdentityServer ready
-
-#### Update IdentityConnectViewModel class of the XamarinBookStoreApp project
-
-```csharp
-    using IdentityModel.OidcClient;
-    using IdentityModel.OidcClient.Browser;
-    using Newtonsoft.Json;
-    using System;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Xamarin.Forms;
-    using XamarinBookStoreApp.Services.Books;
-
-    namespace XamarinBookStoreApp.ViewModels
+namespace AbpXamarinForms.Services
+{
+    public class LoginService
     {
-        public partial class IdentityConnectViewModel : BaseViewModel
+        private const string _authorityUrl = "https://<your-ngrok-generated-generated-number-here>.eu.ngrok.io";
+        private const string _redirectUrl = "xamarinformsclients:/authenticated";
+        private const string _postLogoutRedirectUrl = "xamarinformsclients:/signout-callback-oidc";
+        private const string _scopes = "email openid profile role phone address AbpApi";
+        private const string _clientSecret = "1q2w3e*";
+        private const string _clientId = "AbpApi_Xamarin";
+
+
+        private OidcClient CreateOidcClient()
         {
-            OidcClient _client;
-            LoginResult _result;
-            Lazy<HttpClient> _apiClient;
-
-            public Command ConnectToIdentityServerCommand { get; }
-
-
-            public IdentityConnectViewModel()
+            var options = new OidcClientOptions
             {
-                Title = "IdentityServer";
-
-                var httpClientHandler = new HttpClientHandler
-                {
-                    ServerCertificateCustomValidationCallback =
-                    (message, cert, chain, errors) => { return true; }
-                };
-
-                _apiClient = new Lazy<HttpClient>(() => new HttpClient(httpClientHandler));
-
-                var browser = DependencyService.Get<IBrowser>();
-                var options = new OidcClientOptions
-                {
-                    Authority = "https://<your-ip-address>:<port-identity-server>",
-                    ClientId = "XamarinBookStoreApi_Xamarin",
-                    Scope = "email openid profile role phone address XamarinBookStoreApi",
-                    ClientSecret = "1q2w3e*",
-                    RedirectUri = "xamarinformsclients://callback",
-                    Browser = browser,
-                    ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
-                };
-                options.BackchannelHandler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = (message, certificate, chain, sslPolicyErrors) => true };
-                options.Policy.Discovery.RequireHttps = true;
-                _client = new OidcClient(options);
-
-                ConnectToIdentityServerCommand = new Command(async () => await ConnectToIdentityServerAsync());
-            }
-
-            private async Task ConnectToIdentityServerAsync()
-            {
-                _result = await _client.LoginAsync(new LoginRequest());
-
-                if (_result.IsError) return;
-
-                var sb = new StringBuilder(128);
-                foreach (var claim in _result.User.Claims)
-                {
-                    sb.AppendFormat("{0}: {1}\n", claim.Type, claim.Value);
-                }
-
-                sb.AppendFormat("\n{0}: {1}\n", "refresh token", _result?.RefreshToken ?? "none");
-                sb.AppendFormat("\n{0}: {1}\n", "access token", _result.AccessToken);
-
-                _apiClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _result?.AccessToken ?? "");
-                var response = await _apiClient.Value.GetAsync("https://<your-ip-address>:<port-api>/api/app/book");
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var booksResult = JsonConvert.DeserializeObject<BooksResult>(content);
-                }
-            }
+                Authority = _authorityUrl,
+                ClientId = _clientId,
+                Scope = _scopes,
+                RedirectUri = _redirectUrl,
+                ClientSecret = _clientSecret,
+                PostLogoutRedirectUri = _postLogoutRedirectUrl,
+                Browser = new WebAuthenticatorBrowser()
+            };
+            return new OidcClient(options);
         }
 
-           public class BooksResult
+         public async Task<string> AuthenticateAsync()
         {
-            public int TotalCount { get; set; }
-            public List<BookDto> Items { get; set; }
-        }
-
-        public class BookDto
-        {
-            public Guid Id { get; set; }
-            public string Name { get; set; }
-            public BookType Type { get; set; }
-            public DateTime PublishDate { get; set; }
-            public float Price { get; set; }
-            public DateTime? LastModificationTime { get; set; }
-            public Guid? LastModifierId { get; set; }
-        }
-
-       public enum BookType
-       {
-            Undefined,
-            Adventure,
-            Biography,
-            Dystopia,
-            Fantastic,
-            Horror,
-            Science,
-            ScienceFiction,
-            Poetry
+            var oidcClient = CreateOidcClient();
+            var loginResult = await oidcClient.LoginAsync(new LoginRequest());
+            return loginResult.AccessToken;
         }
     }
+}
+
 ```
 
-## Run the Xamarin app, the IdentityServer, API and Blazor projects from the ABP Framework application
+### Update content of the LoginViewModel.cs class
 
-If all goes well, your Xamarin.Forms opens a browser window where you need to authenticate with your administrator credentials (admin - 1q2w3E*). Once logged in, the app makes a call to the ABP Framework API that returns the books from the database.
+```csharp
+using AbpXamarinForms.Services;
+using IdentityModel.Client;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using Xamarin.Forms;
 
-![Api consumed by Xamarin app](../Images/api_consumed_by_xamarin_app.gif)
+namespace AbpXamarinForms.ViewModels
+{
+    public class LoginViewModel : BaseViewModel
+    {
+        private readonly LoginService _loginService = new LoginService();
+        public Command LoginCommand { get; }
 
-Et voilà! As you can see in the animated gif the Xamarin.Forms app successfully retrieves data from the database by connecting to the IdentityServer4 and consuming the ABP Framework API.
+        public LoginViewModel()
+        {
+            LoginCommand = new Command(OnLoginClicked);
+        }
 
-Get the [source code](https://github.com/bartvanhoey/AbpApiConsumedByXamarin) on GitHub.
+        private async void OnLoginClicked(object obj)
+        {
+            var ngRokUrl = "https://<your-ngrok-generated-generated-number-here>.eu.ngrok.io";
+            var accessToken = await _loginService.AuthenticateAsync();
+            Console.WriteLine($"accesstoken: {accessToken}");
+
+            var httpClient = GetHttpClient(accessToken);
+            var response = await httpClient.Value.GetAsync($"{ngRokUrl}/api/app/book");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var booksResult = JsonConvert.DeserializeObject<BooksResult>(content);
+
+                var book = booksResult.Items.FirstOrDefault();
+                Console.WriteLine($"book: {book.Name} - price: {book.Price}");
+            }
+            // Set a breakpoint on the line below
+            Console.ReadLine();
+        }
+
+        private Lazy<HttpClient> GetHttpClient(string accessToken)
+        {
+            var httpClient = new Lazy<HttpClient>(() => new HttpClient(GetHttpClientHandler()));
+            httpClient.Value.SetBearerToken(accessToken);
+            return httpClient;
+        }
+
+        private HttpClientHandler GetHttpClientHandler()
+        {
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // EXCEPTION : Javax.Net.Ssl.SSLHandshakeException: 'java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.'
+            // SOLUTION :
+            var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            return httpClientHandler;
+        }
+
+    }
+
+    public class BooksResult
+    {
+        public int TotalCount { get; set; }
+        public List<BookDto> Items { get; set; }
+    }
+
+    public class BookDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public BookType Type { get; set; }
+        public DateTime PublishDate { get; set; }
+        public float Price { get; set; }
+        public DateTime? LastModificationTime { get; set; }
+        public Guid? LastModifierId { get; set; }
+    }
+
+    public enum BookType
+    {
+        Undefined,
+        Adventure,
+        Biography,
+        Dystopia,
+        Fantastic,
+        Horror,
+        Science,
+        ScienceFiction,
+        Poetry
+    }
+}
+```
+
+### Add a WebAuthenticationCallbackActivity class in root of the Android project
+
+```csharp
+using Android.App;
+using Android.Content;
+using Android.Content.PM;
+
+namespace AbpXamarinForms.Droid
+{
+    [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop)]
+    [IntentFilter(new[] { Intent.ActionView },
+        Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "xamarinformsclients")]
+    public class WebAuthenticationCallbackActivity : Xamarin.Essentials.WebAuthenticatorCallbackActivity
+    {
+    }
+}
+```
+
+## Run both API and Xamarin.Forms application
+
+* Update the **_authorityUrl** field in the LoginService class with the correct **ngrok Forwarding https url**
+* Update the **ngRokUrl** variable in the **OnLoginClicked** method of the **LoginViewModel** class
+* Start the **AbpApi** application and make sure **ngrok is running**
+* Run the **AbpXamarinForms** application on an emulator or physical device.
+* Click the **Login button** and enter the **administrator credentials** (admin, 1q2w3E*)
+
+**WARNING**: You will probably get a **SecurityTokenInvalidIssuerException**
+
+## Fix SecurityTokenInvalidIssuerException: IDX10205: Issuer validation failed
+
+```bash
+Failed to validate the token.
+
+Microsoft.IdentityModel.Tokens.SecurityTokenInvalidIssuerException: IDX10205: Issuer validation failed. Issuer: 'System.String'. Did not match: validationParameters.ValidIssuer: 'System.String' or validationParameters.ValidIssuers: 'System.String'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateIssuer(String issuer, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateIssuer(String issuer, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+```
+
+### Update the ConfigureAuthentication method in the AbpApiHostModule of the AbpApi.HttpApi.Host project
+
+```csharp
+ private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
+{
+    context.Services.AddAuthentication()
+        .AddJwtBearer(options =>
+        {
+            options.Authority = configuration["AuthServer:Authority"];
+            options.RequireHttpsMetadata = Convert.ToBoolean(configuration["AuthServer:RequireHttpsMetadata"]);
+            options.Audience = "AbpApi";
+            options.BackchannelHttpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+            // Add the line below 
+            options.TokenValidationParameters.ValidIssuers = configuration.GetSection("AuthServer:ValidIssuers").Get<string[]>();
+            
+            // Alternatively the line below would also fix the problem.
+            // options.TokenValidationParameters.ValidateIssuer = false;
+        });
+}
+```
+
+### Add ValidIssuers to the AuthServer section of the appsettings.json file in the AbpApi.HttpApi.Host project
+
+```json
+"AuthServer": {
+    "Authority": "https://localhost:<replace-me-with-the-abp-api-port>",
+    "RequireHttpsMetadata": "false",
+    "SwaggerClientId": "AbpApi_Swagger",
+    "SwaggerClientSecret": "1q2w3e*",
+    "ValidIssuers": [
+      "https://<your-ngrok-generated-generated-number-here>.eu.ngrok.io"
+    ]
+  },
+```
+
+## Start both the AbpApi and the AbpXamarinForms applications
+
+If all goes well, your XamarinForms application opens the ABP login page where you can enter the administrator credentials (admin - 1q2w3E*).
+Once logged in, the app makes a call to the ABP Framework API to get the books from the database.
+
+Et voilà! The Xamarin.Forms app connects to the IdentityServer4 successfully and gets the books from the ABP Framework API.
+
+Get the [source code](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/tree/main/XamarinForms) on GitHub.
 
 Enjoy and have fun!

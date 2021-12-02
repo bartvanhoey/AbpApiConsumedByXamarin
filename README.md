@@ -4,6 +4,9 @@
 
 In this article I will explain **how to consume an ABP Framework API with Xamarin.Forms**.
 
+The article is a complete rewrite of an older article that you can find here [here](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/AbpIo/ConsumeAbpFrameworkApiFromXamarinForms_old.md).
+
+
 ## Source Code
 
 The sample application has been developed with Blazor as UI framework and SQL Server as database provider.
