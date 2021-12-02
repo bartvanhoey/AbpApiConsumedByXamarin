@@ -8,7 +8,7 @@ In this article I will explain **how to consume an ABP Framework API with Xamari
 
 The sample application has been developed with Blazor as UI framework and SQL Server as database provider.
 
-The Source code of the completed application is [available on GitHub](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/XamarinForms).
+The Source code of the completed application is [available on GitHub](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/tree/main/XamarinForms).
 
 ## Requirements
 
@@ -406,6 +406,6 @@ Once logged in, the app makes a call to the ABP Framework API to get the books f
 
 Et voilà! The Xamarin.Forms app connects to the IdentityServer4 successfully and gets the books from the ABP Framework API.
 
-Get the [source code](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/XamarinForms) on GitHub.
+Get the [source code](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/tree/main/XamarinForms) on GitHub.
 
 Enjoy and have fun!
