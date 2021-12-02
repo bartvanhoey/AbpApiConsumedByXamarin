@@ -2,9 +2,9 @@
 
 ## Introduction
 
-In this article I will explain **how to consume an ABP Framework API with Xamarin.Forms**.
+In this article, I will explain **how to consume an ABP Framework API with Xamarin.Forms**.
 
-The article is a complete rewrite of an older article that you can find here [here](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/AbpIo/ConsumeAbpFrameworkApiFromXamarinForms_old.md).
+The article is a complete rewrite of an older one that you can find here [here](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/AbpIo/ConsumeAbpFrameworkApiFromXamarinForms_old.md).
 
 ## Source Code
 
@@ -74,8 +74,8 @@ Start API and Blazor project to see if all projects are running successfully. Ke
 
 ## Download & setup ngrok
 
-With ngrok you can mirror your localhost API endpoint to a worldwide available API endpoint.
-In this way you can overcome the problem Xamarin.Forms app mixing up localhost from the API with localhost from the Xamarin.Forms app.
+With ngrok, you can mirror your localhost API endpoint to a worldwide available API endpoint.
+In this way, you can overcome the problem of Xamarin.Forms app mixing up localhost from the API with localhost from the Xamarin.Forms app.
 
 ### Open a command prompt in the root of ABP Framework application and run the command below
 
@@ -86,7 +86,7 @@ In this way you can overcome the problem Xamarin.Forms app mixing up localhost f
 
 ![Ngrok port forwarding](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/Images/ngrok_localhost_port_forwarding.jpg)
 
-### Copy and remember Ngrok Forwarding https endpoint
+### Copy and remember Ngrok Forwarding HTTPS endpoint
 
 ```bash
     "https://<your-ngrok-generated-generated-number-here>.eu.ngrok.io"
@@ -100,7 +100,7 @@ In this way you can overcome the problem Xamarin.Forms app mixing up localhost f
 
 ### Update Nuget Packages
 
-I updated the following nuget packages in the Xamarin.core project and the Android.project.
+I updated the following NuGet packages in the Xamarin.core project and the Android.project.
 
 ```bash
     Xamarin.Forms" Version="5.0.0.2244
@@ -323,7 +323,7 @@ namespace AbpXamarinForms.ViewModels
 }
 ```
 
-### Add a WebAuthenticationCallbackActivity class in root of the Android project
+### Add a WebAuthenticationCallbackActivity class in the root of the Android project
 
 ```csharp
 using Android.App;
@@ -403,8 +403,8 @@ Microsoft.IdentityModel.Tokens.SecurityTokenInvalidIssuerException: IDX10205: Is
 
 ## Start both the AbpApi and the AbpXamarinForms applications
 
-If all goes well, your XamarinForms application opens the ABP login page where you can enter the administrator credentials (admin - 1q2w3E*).
-Once logged in, the app makes a call to the ABP Framework API to get the books from the database.
+If all goes well, your XamarinForms application opens the ABP login page.  Enter the administrator credentials (admin - 1q2w3E*) and confirm.
+Once logged in, the app sends an Http-request to the ABP Framework API to get the books from the database.
 
 Et voilà! The Xamarin.Forms app connects to the IdentityServer4 successfully and gets the books from the ABP Framework API.
 
