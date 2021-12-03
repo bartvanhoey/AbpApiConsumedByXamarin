@@ -84,7 +84,7 @@ In this way, you can overcome the problem of Xamarin.Forms app mixing up localho
     ngrok http -region eu https://localhost:<replace-me-with-the-abp-api-port>/ 
 ```
 
-![Ngrok port forwarding](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/Images/ngrok_localhost_port_forwarding.jpg)
+![Ngrok port forwarding](../Images/ngrok_localhost_port_forwarding.jpg)
 
 ### Copy and remember Ngrok Forwarding HTTPS endpoint
 
@@ -96,7 +96,7 @@ In this way, you can overcome the problem of Xamarin.Forms app mixing up localho
 
 ### Create a new Xamarin app in Visual Studio (Flyout template)
 
-![Create a new Xamarin.Forms app](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/Images/create_new_mobile_app.jpg)
+![Create a new Xamarin.Forms app](../Images/create_new_mobile_app.jpg)
 
 ### Update Nuget Packages
 
@@ -126,7 +126,7 @@ Start the Android the Xamarin.Forms application and stop it again when it runs s
 
 Open the Nuget Package Manager and install **IdentityModel**, **IdentityModel.OidcClient**  and **Newtonsoft.json** nuget packages in the core project.
 
-![Installed nuget packages](https://github.com/bartvanhoey/AbpApiConsumedByXamarin/blob/main/Images/installed_nuget_packages_in_xamarin_forms.jpg)
+![Installed nuget packages](../Images/installed_nuget_packages_in_xamarin_forms.jpg)
 
 ### Add a WebAuthenticatorBrowser class to the Services folder in the Core project
 
